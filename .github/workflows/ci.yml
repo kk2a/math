@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          ssh-key: ${{ secrets.SUBMODULE_DEPLOY_KEY }}
+
+      - name: Check submodules are up-to-date
+        run: |
+          git submodule foreach '
+            local=$(git rev-parse HEAD)
+            remote=$(git ls-remote origin HEAD | cut -f1)
+            if [ "$local" != "$remote" ]; then
+              echo "::error::$name is not up-to-date (local: $local, remote: $remote)"
+              exit 1
+            fi
+          '
