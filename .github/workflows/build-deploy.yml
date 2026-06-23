@@ -50,6 +50,8 @@ jobs:
           chmod 700 ~/.ssh
           printf '%s\n' "$SUBMODULE_DEPLOY_KEY" > ~/.ssh/submodule_deploy_key
           chmod 600 ~/.ssh/submodule_deploy_key
+          touch ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           cat > ~/.ssh/config <<'EOF'
           Host github.com
