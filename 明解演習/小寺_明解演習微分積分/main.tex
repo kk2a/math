@@ -1,0 +1,1598 @@
+\documentclass[a4paper,10pt]{ltjsarticle}
+
+\usepackage{_my_style}
+
+\makeatletter
+\@ifpackageloaded{geometry}{%
+  \geometry{top=25.4mm,bottom=25.4mm,left=19mm,right=19mm}%
+}{%
+  \usepackage[top=25.4mm,bottom=25.4mm,left=19mm,right=19mm]{geometry}%
+}
+\makeatother
+
+\setlist[enumerate]{
+  topsep=2pt,
+  itemsep=1pt,
+  parsep=0pt,
+  partopsep=0pt,
+  leftmargin=1.8em,
+  labelsep=0.5em
+}
+\renewcommand{\theenumi}{(\roman{enumi})}
+\setlist[itemize]{
+  topsep=2pt,
+  itemsep=1pt,
+  parsep=0pt,
+  partopsep=0pt,
+  leftmargin=1.8em
+}
+
+\begin{document}
+
+% title
+% author
+% date
+\begin{center}
+  {\LARGE 微分積分　証明など}\
+  \vskip6.5pt
+  {\large あ}\
+  \vskip2pt
+  {\large 最終更新日: \today}
+\end{center}
+
+ここでは，私が明解演習微分積分を解いているときに疑問になった事実や，証明の詳細などをまとめていきます．そのため，章立ては明解演習に対応しています．しかし，これによって\cref{sec:differentiation_R}を読もうとすると，\cref{sec:sequence_series}の内容を先に読まないといけなくなったりして，読みにくいかもしれません．読みやすくするために
+
+
+補足：杉浦『解析入門Ⅰ』，内田『集合と位相』や，Gemini 3.1 Proの解答などを参考にして書いています．
+
+\newpage
+\tableofcontents
+\newpage
+
+
+\section{\texorpdfstring{\(\R\)}{R} 上の微分法}
+\label{sec:differentiation_R}
+
+\subsection{極限}
+\label{sec:limit}
+
+明解演習の表記では，片側極限や無限大への極限を統一的に記述できないです．そのため，ここではまず，極限を定義し直してから，諸事実を簡潔に述べて証明していきます．
+
+\begin{MyDefinition}[][epsilon_neighborhood]
+  \(a \in \R^n\)と\(\varepsilon > 0\)に対して，開球\(U(a, \varepsilon)\coloneqq\set{x \in \R^n : |x - a| < \varepsilon}\)を\(a\)の\textbf{\(\bm \varepsilon\)近傍}と呼ぶ．
+\end{MyDefinition}
+
+幾つかの用語を定義する．\(A\)を\(\R^n\)の部分集合とする．
+\begin{enumerate}
+  \item 点\(a\in A\)が\(A\)の\textbf{内点}であるとは，ある\(\varepsilon > 0\)が存在して，\(U(a, \varepsilon) \subset A\)となることをいう．\(A\)の内点全体の集合を\(A^i\)や，\(A^\circ\)と書き，\(A\)の\textbf{内部}と呼ぶ．
+  \item \(A\)が\textbf{開集合}であるとは，\(A = A^i\)が成り立つことをいう．
+  \item 点\(a\in \R^n\)が\(A\)の\textbf{外点}であるとは，ある\(\varepsilon > 0\)が存在して，\(U(a, \varepsilon) \cap A = \emptyset\)となることをいう．\(A\)の外点全体の集合を\(A^e\)と書き，\(A\)の\textbf{外部}と呼ぶ．
+  \item 点\(a\in\R^n\)が\(A\)の\textbf{境界点}であるとは，任意の\(\varepsilon > 0\)に対して，\(U(a, \varepsilon)\cap A \ne \emptyset\)かつ\(U(a, \varepsilon)\cap A^e \ne \emptyset\)となることをいう．\(A\)の境界点全体の集合を\(\partial A\)や，\(A^f\)と書き，\(A\)の\textbf{境界}と呼ぶ．
+  \item 点\(a\in\R^n\)が\(A\)の\textbf{触点}であるとは，任意の\(\varepsilon > 0\)に対して，\(U(a, \varepsilon)\)と\(A\)が交わることをいう．\(A\)の触点全体の集合を\(\overline A\)や，\(A^a\)と書き，\(A\)の\textbf{閉包}と呼ぶ．
+  \item \(A\)が\textbf{閉集合}であるとは，\(A = \overline A\)が成り立つことをいう．
+  \item 点\(a \in \R^n\)が\(A\)の\textbf{集積点}であるとは，\(A\setminus\set{a}\)の触点であることをいう．\(A\)の集積点全体の集合を\(A^d\)と書き，\(A\)の\textbf{導集合}と呼ぶ．
+  \item \(A \setminus A^d\)の点を\(A\)の\textbf{孤立点}と呼ぶ．
+  \item \(A\)が点\(a \in \R^n\)の\textbf{近傍}であるとは，\(a\)が\(A\)の内点であることをいう．特に，\(A\)が開集合であるとき，\(A\)は点\(a\)の開近傍であるという．点\(a\)の近傍全体の集合を\(\mathfrak{N}(a)\)と書き，点\(a\)の\textbf{近傍系}と呼ぶ．
+\end{enumerate}
+定義より次が成り立つ．
+\begin{enumerate}
+  \item \((A^c)^i = A^e, (A^c)^e = A^i, (A^c)^f = A^f\).
+  \item \(\R^n = A^i \sqcup A^e \sqcup A^f\).
+  \item \(A^i \subset A \subset A^a\).
+  \item \(A^a = A^i \sqcup A^f = A^d \cup A\).
+\end{enumerate}
+
+\begin{MyProposition}[][open_ball_is_open]
+  任意の\(a \in \R^n, \varepsilon > 0\)に対して，\(U(a, \varepsilon)\)は開集合である．
+\end{MyProposition}
+\begin{proof}
+  \(x \in U(a, \varepsilon)\)をとる．\(\varepsilon' = \varepsilon - |x - a| > 0\)とおけば，\(y \in U(x, \varepsilon')\)ならば，
+  \[ |y - a| \le |y - x| + |x - a| < \varepsilon' + |x - a| < \varepsilon. \]
+  よって，\(U(x, \varepsilon') \subset U(a, \varepsilon)\)，つまり，\(x\)は\(U(a, \varepsilon)\)の内点である．
+\end{proof}
+
+\begin{MyProposition}[][open_closed_complement]
+  開集合の補集合は閉集合で，閉集合の補集合は開集合である．
+\end{MyProposition}
+\begin{proof}
+  \(A\)を開集合とする．
+  \[ A^c = A^f \cup A^e = (A^c)^f \cup (A^c)^i = (A^c)^a. \]
+  したがって，\(A^c\)は閉集合である．\(A\)を閉集合とする．
+  \[ A^c = A^e = (A^c)^i. \]
+  したがって，\(A^c\)は開集合である．
+\end{proof}
+
+\begin{MyProposition}[][interior_closure_idempotent]
+  \(\R^n\)上の部分集合\(A\), \(B\)に対して，次が成り立つ．
+  \begin{enumerate}
+    \item \((A \cap B)^i = A^i \cap B^i\).
+    \item \((A \cup B)^a = A^a \cup B^a\).
+    \item \((A^i)^i = A^i\).
+    \item \((A^a)^a = A^a\).
+  \end{enumerate}
+\end{MyProposition}
+\begin{proof}
+  (i)： (\(\subset\))：\(a \in (A \cap B)^i\)をとる．ある\(\varepsilon > 0\)が存在して，\(U(a, \varepsilon) \subset A \cap B\)となる．このとき，\(U(a, \varepsilon) \subset A\)かつ\(U(a, \varepsilon) \subset B\)だから，\(a \in A^i\)かつ\(a \in B^i\)，つまり，\(a \in A^i \cap B^i\)．(\(\supset\))：\(a \in A^i \cap B^i\)をとる．ある\(\varepsilon_1, \varepsilon_2 > 0\)が存在して，\(U(a, \varepsilon_1) \subset A\)かつ\(U(a, \varepsilon_2) \subset B\)となる．このとき，\(U(a, \min\set{\varepsilon_1, \varepsilon_2}) = U(a, \varepsilon_1) \cap U(a, \varepsilon_2)\)だから，\(U(a, \min\set{\varepsilon_1, \varepsilon_2}) \subset A\cap B\)，つまり，\(a \in (A\cap B)^i\)．
+
+  (ii)：(\(\subset\))：\(a \notin A^a \cup B^a\)をとる．ある\(\varepsilon_1, \varepsilon_2 > 0\)が存在して，
+  \[ U(a, \varepsilon_1) \cap A = \emptyset, U(a, \varepsilon_2) \cap B = \emptyset. \]
+  \(\varepsilon = \min\set{\varepsilon_1, \varepsilon_2}\)とすれば，
+  \begin{align*}
+    U(a, \varepsilon) \cap (A \cup B) & = (U(a, \varepsilon) \cap A) \cup (U(a, \varepsilon) \cap B)                        \\
+                                      & \subset (U(a, \varepsilon_1) \cap A) \cup (U(a, \varepsilon_2) \cap B) = \emptyset.
+  \end{align*}
+  よって，\(a\notin (A \cup B)^a\)．(\(\supset\))：\(a \in A^a\)をとる．任意の\(\varepsilon > 0\)に対して，
+  \(U(a, \varepsilon) \cap A \ne \emptyset\)である．この\(\varepsilon\)に対して，
+  \[ \emptyset \ne U(a, \varepsilon) \cap A \subset U(a, \varepsilon) \cap (A \cup B) \implies U(a, \varepsilon) \cap (A \cup B) \ne \emptyset. \]
+  よって，\(a \in (A \cup B)^a\)．同様にして，\(a \in B^a\)ならば，\(a \in (A \cup B)^a\)．
+
+  (iii)：まず，(i)において，\(A \subset B\)とすることで，\(A^i \subset B^i\)を得る．また，\(A^i \subset A\)だから，\((A^i)^i \subset A^i\)．あとは，\(A^i \subset (A^i)^i\)を示せば良い．\(a \in A^i\)をとる．ある\(\varepsilon > 0\)が存在して，\(U(a, \varepsilon) \subset A\)となる．このとき，\(U(a, \varepsilon) \subset A^i\)ならば，\(a \in (A^i)^i\)となり，証明終了．\(U(a, \varepsilon) \subset A^i\)を示す．\(x \in U(a, \varepsilon)\)をとる．\(\varepsilon' = \varepsilon - |x - a| > 0\)とおけば，\(y \in U(x, \varepsilon')\)ならば，
+  \[ |y - a| \le |y - x| + |x - a| < \varepsilon' + |x - a| = \varepsilon \]
+  だから，\(y \in U(a, \varepsilon)\)．したがって，\(U(x, \varepsilon') \subset U(a, \varepsilon) \subset A\)，つまり，\(x \in A^i\)．
+
+  (iv)：まず，(ii)において，\(A \subset B\)とすることで，\(A^a \subset B^a\)を得る．また，\(A \subset A^a\)だから，\(A^a \subset (A^a)^a\)．あとは，\((A^a)^a \subset A^a\)を示せば良い．\(a \in (A^a)^a\)をとる．任意の\(\varepsilon > 0\)に対して，\(U(a, \varepsilon) \cap A^a \ne \emptyset\)である．この\(\varepsilon\)に対して，\(x \in U(a, \varepsilon) \cap A^a\)をとる．\(\varepsilon' = \varepsilon - |x - a| > 0\)とおけば，\(x \in A^a\)だから，\(U(x, \varepsilon') \cap A \ne \emptyset\)．また，\(U(x, \varepsilon') \subset U(a, \varepsilon)\)だから，\(U(a, \varepsilon) \cap A \ne \emptyset\)．したがって，\(a \in A^a\)．
+\end{proof}
+
+
+\begin{MyDefinition}[極限][limit]
+  \(A \subset \R^n\)は非空，\(f : A \to \R^m\), \(a \in A^d\), \(b \in \R^m\)とする．\textbf{\(\bm x\)が\(\bm a\)に近づくときの\(\bm {f(x)}\)の極限が\(\bm{b}\)}であるとは，任意の\(\varepsilon > 0\)に対してある\(\delta > 0\)が存在して，\(0 < |x - a| < \delta\)かつ\(x \in A\)ならば\(|f(x) - b| < \varepsilon\)となることをいう．このとき，\(\lim_{x \to a} f(x) = b\)と書く．論理記号で書くと，
+  \[ \paren{\forall \varepsilon > 0}\paren{\exists \delta > 0}\paren{\forall x}\paren{(0 < |x - a| < \delta \land x \in A) \to |f(x) - b| < \varepsilon},\]
+  または，
+  \[ \paren{\forall \varepsilon > 0}\paren{\exists \delta > 0}\paren{\forall x \in A}\paren{0 < |x - a| < \delta \to |f(x) - b| < \varepsilon}.\]
+\end{MyDefinition}
+
+このように定義することによって，同時に片側極限を定義することができる．例えば，\(x\to+0\)であれば，\(A = (0, c)\)のような集合を考えれば良い．
+
+\begin{MyDefinition}[\(\infty\)を含めた極限][limit_infty]
+  \(A \subset \R^n\)は非空，\(f: A \to \R\), \(a \in A^d\)とする．\(\lim_{x \to a} f(x) = +\infty\)は次のように定義する：
+  \[ \paren{\forall M > 0}\paren{\exists \delta > 0}\paren{\forall x \in A}\paren{0 < |x - a| < \delta \to f(x) > M}.\]
+  \(\lim_{x \to a} f(x) = -\infty\)も同様に定義する．
+
+  \(B \subset R\)を上に非有界な集合として，\(g: B \to \R^n\)に対して，\(\lim_{x \to +\infty} g(x) = b\)は次のように定義する：
+  \[ \paren{\forall \varepsilon > 0}\paren{\exists M > 0}\paren{\forall x \in B}\paren{x > M \to |g(x) - b| < \varepsilon}.\]
+  \(B\)が下に非有界だとして，\(\lim_{x \to -\infty} g(x) = b\)も同様に定義する．
+
+  \(h: B \to \R\)に対して，\(\lim_{x \to +\infty} h(x) = +\infty\)，\(\lim_{x \to +\infty} h(x) = -\infty\)も同様に定義する．
+\end{MyDefinition}
+
+\(\overline\R \coloneqq \R \cup \set{\pm\infty}\)を\textbf{補完数直線}と呼ぶ．\(U(+\infty, \varepsilon) = (\frac1\varepsilon, +\infty]\), \(U(-\infty, \varepsilon) = [-\infty, -\frac1\varepsilon)\)などと定義する．こう定義すれば次のことが言える：
+\begin{enumerate}
+  \item 集合\(A\)が上（resp. 下）に非有界なことと，\(+\infty\)（resp. \(-\infty\)）が\(A\)の集積点（触点）であることは同値である．
+  \item \(a, b \in \overline{\R}\)とする．このとき，\(a = b\)であるための必要十分条件は，任意の\(\varepsilon > 0\)に対して，\(U(a, \varepsilon) \cap U(b, \varepsilon) \ne \emptyset\)であることである．
+  \item \(a, b > 0\), \(c \in \overline{\R}\)とする．このとき，\(a < b\)ならば，\(U(c, a) \subset U(c, b)\)．
+\end{enumerate}
+(i)は\(\pm\infty\in \overline{\R}^d\)が言えて極限の行先はみんな集積点と言える．(ii), (iii)は証明においてわざわざ\(\pm\infty\)を特別扱いする必要がなくなり便利である．
+
+\begin{MyDefinition}[極限セットアップ][limit_setup]
+  \(B\), \(C\)はそれぞれ，\(\R^n\)か\(\overline\R\)で，\(A \subset C\)は非空，\(f: A \to B\), \(a \in A^d\)として，\(A, B, f, a\)を\textbf{極限セットアップ}と呼ぶ．
+\end{MyDefinition}
+
+\begin{MyProposition}[極限の定義の統一的な記述][limit_definition_unified]
+  \(A, B, f, a\)を極限セットアップ，\(b \in B\)とする．このとき，\(\lim_{x \to a} f(x) = b\)であることは，次と同値である：
+  \[ \paren{\forall \varepsilon > 0}\paren{\exists \delta > 0}\paren{\forall x \in A}\paren{x \in U'(a, \delta) \to f(x) \in U(b, \varepsilon)},\]
+  ただし，\(U'(a, \delta) = U(a, \delta) \setminus \set{a}\)という簡略化した表記を用いた．
+\end{MyProposition}
+\begin{proof}
+  定義から明らかである．
+\end{proof}
+
+\begin{MyProposition}[極限の一意性][limit_uniqueness]
+  \(A, B, f, a\)を極限セットアップとする．\(\lim_{x \to a} f(x)\)が存在するならば，その値は一意である．
+\end{MyProposition}
+\begin{proof}
+  \(\lim_{x \to a} f(x) = b\)かつ\(\lim_{x \to a} f(x) = c\)とする．\(\varepsilon > 0\)を任意に取る．すると，ある\(\delta_1 > 0\)が存在して，任意の\(x \in A\)に対して，
+  \[ x \in U'(a, \delta_1) \implies f(x) \in U(b, \varepsilon). \]
+  また，ある\(\delta_2 > 0\)が存在して，任意の\(x \in A\)に対して，
+  \[ x \in U'(a, \delta_2) \implies f(x) \in U(c, \varepsilon). \]
+  \(\delta = \min\set{\delta_1, \delta_2}\)とおく．\(U\)の定義より，\(U'(a, \delta) \subset U'(a, \delta_1) \cap U'(a, \delta_2)\)．したがって，\(A \cap U'(a, \delta) \ne \emptyset\)（\(\because a\in A^d\)）でここから元を一つ取ると，\(f(x) \in U(b, \varepsilon) \cap U(c, \varepsilon) \ne \emptyset\)となる．\(\varepsilon > 0\)は任意だったので，\(b = c\)となる．
+\end{proof}
+
+\begin{MyProposition}[部分集合の極限][limit_subsequence]
+  \(A, B, f, a\)を極限セットアップとする．\(C \subset A\)であって，\(a \in C^d\)をみたすものとする．定義域を\(C\)に制限した関数\(f|_C : C \to B\)を考える．このとき，\(b \in B\)に対して，\(\lim_{x \to a} f(x) = b\) ならば，\(\lim_{x \to a} f|_C(x) = b\)が成り立つ．
+\end{MyProposition}
+\begin{proof}
+  \(\varepsilon > 0\)を任意に取る．すると，ある\(\delta > 0\)が存在して，任意の\(x \in A\)に対して，
+  \[ x \in U'(a, \delta) \implies f(x) \in U(b, \varepsilon). \]
+  \(C \subset A\)だから，任意の\(x \in C\)に対して，
+  \[ x \in U'(a, \delta) \implies f|_C(x) = f(x) \in U(b, \varepsilon). \]
+\end{proof}
+
+\begin{MyTheorem}[極限の定義の言い換え][limit_reformulation_sequence]
+  \(A, B, f, a\)を極限セットアップ，\(b \in B\)とする．このとき，以下の条件は同値である：
+  \begin{enumerate}
+    \item \(\lim_{x \to a} f(x) = b\).
+    \item \(\lim_{n\to\infty}x_n=a\) なる任意の\(A\setminus\set{a}\)上の点列\(\paren{x_n}_{n\in\N}\)に対して，\(\lim_{n\to\infty}f(x_n) = b\)．
+  \end{enumerate}
+\end{MyTheorem}
+
+\begin{proof}
+  (i)\(\implies\)(ii)：\(\lim_{n\to\infty}x_n=a\) なる任意の\(A\setminus\set{a}\)上の点列\(\paren{x_n}_{n\in\N}\)を取る．\(\varepsilon > 0\)を任意に取る．すると，ある\(\delta > 0\)が存在して，任意の\(x \in A\)に対して，
+  \[ x \in U'(a, \delta) \implies f(x) \in U(b, \varepsilon). \]
+  \(\delta\)に対して，ある\(N \in \N\)が存在して，\(n > N\)ならば\(x_n \in U(a, \delta)\)となる．特に，\(x_n \ne a\)だから，\(x_n \in U'(a, \delta)\)．したがって，\(n > N\)ならば\(f(x_n) \in U'(b, \varepsilon)\)，つまり，\(f(x_n) \to b\).
+
+  (i)\(\impliedby\)(ii)： 対偶を示す．\(\lim_{x \to a} f(x) = b\)の否定は，
+  \[ \paren{\exists \varepsilon > 0}\paren{\forall \delta > 0}\paren{\exists x \in A}\paren{x \in U'(a, \delta) \land f(x) \notin U(b, )}.\]
+  \(\varepsilon > 0\)が存在して，各\(n \ge 1\)に対して，\(x_n\in U'(a, \frac1n)\land f(x_n)\notin U(b, \varepsilon)\)をみたすような\(x_n\)が存在するので，そのような\(x_n\)を選んでいくことで，\(\paren{x_n}_{n\ge1}\)をとる．任意の\(\delta > 0\)に対して，ある\(N \in \N\)が存在して，\(n > N\)ならば\(x_n \in U(a, \frac1n) \subset U(a, \delta)\)だから，\(\lim_{n\to\infty}x_n=a\)．しかし，任意の\(n\)に対して，\(f(x_n)\notin U(b, \varepsilon)\)なので，\(\lim_{n\to\infty}f(x_n) = b\)が成り立たない．
+\end{proof}
+
+\begin{MyCorollary}[][limit_existence_reformulation_sequence]
+  \(A, B, f, a\)を極限セットアップとする．このとき，以下の条件は同値である：
+  \begin{enumerate}
+    \item \(\lim_{x\to a}f(x)\)が存在する．
+    \item \(\lim_{n\to\infty}x_n=a\) なる任意の\(A\setminus\set{a}\)上の点列\(\paren{x_n}_{n\in\N}\)に対して，\(\paren{f(x_n)}_{n\in\N}\)は収束する．
+  \end{enumerate}
+\end{MyCorollary}
+\begin{proof}
+  (i)\(\implies\)(ii)： 明らか．（\cref{thm:limit_reformulation_sequence}）
+
+  (i)\(\impliedby\)(ii)： \(a\)に収束する数列\(\paren{x_n}_{n\in\N}, \paren{y_n}_{n\in\N}\)をとる．このとき，\(\paren{f(x_n)}_{n\in\N}\)と\(\paren{f(y_n)}_{n\in\N}\)は収束値は同じであることを示す．\(x_0, y_0, x_1, y_1, \dots\)のように数列\(\paren{x_n}_{n\in\N}\)と\(\paren{y_n}_{n\in\N}\)を交互にとるような数列\(\paren{z_n}_{n\in\N}\)を考えると，\(\lim_{n\to\infty}z_n=a\)だから，\(\paren{f(z_n)}_{n\in\N}\)も収束する．\(\paren{f(z_n)}_{n\in\N}\)の部分列として，\(\paren{f(x_n)}_{n\in\N}\)と\(\paren{f(y_n)}_{n\in\N}\)があるから，\(\paren{f(x_n)}_{n\in\N}\)と\(\paren{f(y_n)}_{n\in\N}\)の収束値は同じである（\cref{prop:limit_subsequence}）．
+\end{proof}
+
+\begin{MyTheorem}[コーシーの条件][cauchy_condition_function]
+  \(A, B, f, a\)を極限セットアップとする．\(B\)は\(\R^m\)とする．このとき，以下の条件は同値である：
+  \begin{enumerate}
+    \item \(\lim_{x\to a}f(x)\)が存在する．
+    \item \(\paren{\forall \varepsilon > 0}\paren{\exists \delta > 0}\paren{\forall x_1, x_2 \in A}\paren{x_1, x_2 \in U'(a, \delta) \to |f(x_1) - f(x_2)| < \varepsilon}.\)
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)\(\implies\)(ii)： \(\lim_{x\to a}f(x) = b\)とする．\(\varepsilon > 0\)を任意に取る．すると，ある\(\delta > 0\)が存在して，\(x \in U'(a, \delta)\)ならば\(|f(x) - b| < \varepsilon/2\)となる．\(x_1, x_2 \in U'(a, \delta)\)をとる．三角不等式より，
+  \[ |f(x_1) - f(x_2)| \le |f(x_1) - b| + |b - f(x_2)| < \varepsilon/2 + \varepsilon/2 = \varepsilon.\]
+
+  (i)\(\impliedby\)(ii)： \(\lim_{n\to\infty}x_n=a\) なる任意の\(A\setminus\set{a}\)上の点列\(\paren{x_n}_{n\in\N}\)を任意に取る．仮定より，\(\paren{f(x_n)}_{n\in\N}\)はコーシー列である．コーシー列は収束するので（\cref{thm:cauchy_sequence_convergence}），\(\paren{f(x_n)}_{n\in\N}\)は収束する．よって，\cref{cor:limit_existence_reformulation_sequence}より，\(\lim_{x\to a}f(x)\)が存在する．
+\end{proof}
+
+\begin{MyProposition}[はさみうちの原理][squeeze_principle]
+  \(A, B, f, a\)を極限セットアップとする．\(B = \overline\R\)とする．関数\(g : A \to B\)と\(h : A \to B\)があって，常に\(f(x) \le g(x) \le h(x)\)が成り立つとする．このとき，\(f, g, h\)の\(a\)への極限がすべて存在しそれぞれ\(b, c, d\)であるとき，\(b \le c \le d\)が成り立ち，とくに\(b = d\)ならば，\(b = c = d\)である．
+\end{MyProposition}
+\begin{proof}
+  \(b \le c\)を示す．\(b > c\)だと仮定して矛盾を導く．\(b \ne c\)だから，\(\varepsilon > 0\)が存在して，\(U(b, \varepsilon) \cap U(c, \varepsilon) = \emptyset\)とできる．この，\(\varepsilon\)に対して，\(\delta_1, \delta_2 > 0\)が存在して，任意の\(x \in A\)に対して，
+  \begin{align*}
+    x \in U'(a, \delta_1) & \implies f(x) \in U(b, \varepsilon), \\
+    x \in U'(a, \delta_2) & \implies g(x) \in U(c, \varepsilon).
+  \end{align*}
+  \(\delta = \min\set{\delta_1, \delta_2}\)とすれば，任意の\(x \in A\)に対して，
+  \[
+    x \in U'(a, \delta) \implies f(x) \in U(b, \varepsilon) \land g(x) \in U(c, \varepsilon) \]
+  つまり，\(x \in U(b, \varepsilon)\)かつ\(y \in U(c, \varepsilon)\)をみたすような\(x \le y\)が存在する．これは，\(b > c\)と\(\varepsilon\)の取り方から矛盾する．他も同様である．
+\end{proof}
+
+\begin{MyDefinition}[連続][continuity]
+  \(A, B, f, a\)を極限セットアップ，\(a \in A\)だとする．\(\lim_{x \to a} f(x) = f(a)\)であるとき，\(f\)は点\(a\)で\textbf{連続}であるという．逆に，極限が存在しないか，存在しても\(f(a)\)と等しくないときは，\(f\)は点\(a\)で\textbf{不連続}であるという．
+\end{MyDefinition}
+
+極限の行き先を触点ではなく，集積点にしたことによって，孤立点（触点であるが，集積点でない）に対して連続性を定義できなくなった．これでは不便なので，孤立点では常に連続であると定義する．補足として，連続性は次のように書けるので，この定義が正当であることがわかる．
+
+\[ \paren{\forall \varepsilon > 0}\paren{\exists \delta > 0}\paren{\forall x \in A}\paren{x \in U(a, \delta) \to f(x) \in U(f(a), \varepsilon)}. \]
+
+\(B\), \(D\), \(E\)はそれぞれ，\(\R^n\)か\(\overline\R\)で，\(A \subset E\), \(C \subset B\)は非空，\(f: A \to B\), \(g: C \to D\), \(a \in A^d\)とする．\(f(A)\subset C\)とすれば，合成関数\(g\circ f: A \to D; x \mapsto g(f(x))\)を定義できる．ここではこの合成関数の極限について考える．
+
+\(a \in A^d\), \(b' \in C^d\)として，\(\lim_{x \to a} f(x) = b, \lim_{y \to b'} g(y) = c\)だったとする．\(b = b'\)ならば，\(\lim_{x \to a} g(f(x)) = c\)が成り立つだろうか？これは常に成り立つわけではない．例えば，\(f(x)\)が\(b\)に収束する過程で，ある所から常に\(b\)と等しくなってしまう場合は，\(\lim_{x \to a} g(f(x)) = g(b)\)となるが，\(g(b) \ne c\)であれば\(\lim_{x \to a} g(f(x)) = c\)は成り立たない．\cref{thm:limit_composite_function}はこのような状況が起こるための必要十分条件を述べている．
+
+\begin{MyTheorem}[][limit_composite_function]
+  \begin{enumerate}
+    \item \( \paren{\exists \delta > 0}\paren{\forall x \in A}\paren{x \in U'(a, \delta) \to f(x) \ne b} \)
+    \item \(g\)は\(b\)で連続である．つまり，\(g(b)=c\)である．
+    \item \(\lim_{x \to a} g(f(x)) = c\)．
+  \end{enumerate}
+  とすると，(iii)が成り立つことは，(i)または(ii)のどちらかが成り立つことと同値である．
+\end{MyTheorem}
+\begin{proof}
+  必要性は対偶を示す．(i)の否定は，次のように書ける：
+  \[ \paren{\forall \delta > 0}\paren{\exists x \in A}\paren{x \in U'(a, \delta) \land f(x) = b}. \]
+  \(b \in f(A) \subset C\)であるから，(ii)の否定は，\(g(b) \ne c\)である．よって，\(\varepsilon > 0\)が存在して，\(g(b) \notin U(c, \varepsilon)\)．\(\delta > 0\)を任意に取る．すると，\(x \in A\)が存在して，\(x \in U'(a, \delta)\)かつ\(f(x) = b\)．とくに，\(g(f(x)) = g(b) \notin U(c, \varepsilon)\)だから，\(\lim_{x \to a} g(f(x)) = c\)は成り立たない．
+
+  十分性を証明する．これは，(i)\(\implies\)(iii)と(ii)\(\implies\)(iii)を示せば良い．
+
+  (i)\(\implies\)(iii)： \(\varepsilon > 0\)を任意に取る．\(\lim_{y \to b} g(y) = c\)より，ある\(\delta_1 > 0\)が存在して，任意の\(y \in C\)に対して，
+
+  \(\varepsilon > 0\)を任意に取る．\(\lim_{y \to b} g(y) = c\)より，ある\(\delta_1 > 0\)が存在して，任意の\(y \in C\)に対して，
+  \[ y \in U'(b, \delta_1) \implies g(y) \in U(c, \varepsilon). \]
+  また，\(\lim_{x \to a} f(x) = b\)より，ある\(\delta_2 > 0\)が存在して，任意の\(x \in A\)に対して，
+  \[ x \in U'(a, \delta_2) \implies f(x) \in U(b, \delta_1). \]
+  また，(i)より，ある\(\delta_3 > 0\)が存在して，任意の\(x \in A\)に対して，
+  \[ x \in U'(a, \delta_3) \implies f(x) \ne b. \]
+  \(\delta = \min\set{\delta_2, \delta_3}\)とすると，任意の\(x \in A\)に対して，
+  \[ x \in U'(a, \delta) \implies f(x) \in U'(b, \delta_1) \implies g(f(x)) \in U(c, \varepsilon). \]
+
+  (ii)\(\implies\)(iii)： \(\varepsilon > 0\)を任意に取る．\(g\)は\(b\)で連続だから，ある\(\delta_1 > 0\)が存在して，任意の\(y \in C\)に対して，
+  \[ y \in U(b, \delta_1) \implies g(y) \in U(c, \varepsilon). \]
+  また，\(\lim_{x \to a} f(x) = b\)より，ある\(\delta_2 > 0\)が存在して，任意の\(x \in A\)に対して，
+  \[ x \in U'(a, \delta_2) \implies f(x) \in U(b, \delta_1) \implies g(f(x)) \in U(c, \varepsilon). \]
+\end{proof}
+
+\subsection{コンパクト集合}
+\label{sec:compact_set}
+
+\begin{MyDefinition}[点列コンパクト][sequentially_compact]
+  \(A \subset \R^n\)が\textbf{点列コンパクト}であるとは，\(A\)の任意の点列が\(A\)の点に収束する部分列を持つことをいう．
+\end{MyDefinition}
+
+点列コンパクトの条件は次の二つに分けることができる：
+\begin{enumerate}
+  \item \(A\)上の点列は収束する部分列を持つ．
+  \item \(A\)上の点列が収束するなら，その収束先は\(A\)の点である．
+\end{enumerate}
+(i)をみたす集合を\textbf{全有界な集合}と言う．(ii)は閉集合であることと同値である．これを示すには，\(\overline A \subset A\)であることを示せばよい．\(x \in \overline A\)をとる．\(x\)は\(A\)の触点であるから，\(A \cap U(x, \frac1n) \ (n > 0)\)は非空であるから，\(x_n \in A \cap U(x, \frac1n)\)をみたすような\(A\)上の点列\(\paren{x_n}_{n\ge1}\)をとることができ，この点列は\(x\)に収束する．したがって，\(x \in A\)である．
+
+\begin{MyTheorem}[][sequential_compact_Rn]
+  \(A \subset \R^n\)について，次が成り立つ：
+  \begin{enumerate}
+    \item \(A\)が全有界となるための必要十分条件は，\(A\)が有界となることである．
+    \item \(A\)が点列コンパクトとなるための必要十分条件は，\(A\)が有界閉集合となることである．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)：十分性は，\cref{thm:bolzano_weierstrass_theorem_Rn}より明らかである．必要性については，対偶を示す．\(|x_i| > i\)をみたすような\(A\)上の点列\(\paren{x_i}_{i\in\N}\)をとる．この点列は収束する部分列を持たない．つまり，\(A\)は全有界でない．
+
+  (ii)： \(A\)が点列コンパクトであることは，全有界な閉集合のであることと同値である．(i)より，これは有界閉集合であることと同値である．
+\end{proof}
+
+
+\begin{MyTheorem}[最大値最小値の定理][extreme_value_theorem]
+  \(\R^n\)上の点列コンパクト集合\(K\)と，連続関数\(f: K \to \R^m\)について，\(f(K)\)は点列コンパクトである．特に，\(m=1\)の場合，\(f\)は\(K\)上で最大値と最小値をとる．
+\end{MyTheorem}
+\begin{proof}
+  \(f(K)\)上の点列\(\paren{y_i}_{i\in\N}\)をとる．\(y_i = f(x_i)\)をみたすように，\(K\)上の点列\(\paren{x_i}_{i\in\N}\)をとる．\(K\)は点列コンパクトだから，ある部分列\(\paren{x_{i_j}}_{j\in\N}\)が存在して，ある\(x \in K\)に収束する．\(f\)は連続だから，
+  \[ \lim_{j \to \infty} y_{i_j} = \lim_{j \to \infty} f(x_{i_j}) = f(x) \in f(K). \]
+  よって，\(f(K)\)は点列コンパクトである．\(m=1\)の場合，\(f(K)\)は有界だから，上限と下限が存在し，それぞれを\(a\), \(b\)とおく．\(f(K)\)上の点列で，\(a\)に収束するものがとれるから，\(a \in f(K)\)となり，\(f\)は\(K\)上で最大値\(a\)をとる．同様にして，\(f\)は\(K\)上で最小値\(b\)をとる．
+\end{proof}
+
+\begin{MyDefinition}[コンパクト][compact]
+  \(\R^n\)の部分集合族\(U = \set{U_\lambda : \lambda \in \Lambda}\)が集合\(A\)の\textbf{被覆}であるとは，
+  \[ A \subset \bigcup_{\lambda \in \Lambda} U_\lambda \]
+  であることをいう．特に，\(U_\lambda\)がすべて開集合であるとき，\(U\)は\(A\)の\textbf{開被覆}であるという．\(A\)の任意の開被覆\(U\)に対して，ある\(U\)有限部分集合\(\set{U_i}_{i=1}^k\)が存在して，
+  \[ A \subset \bigcup_{i=1}^k U_{i} \]
+  をみたすとき，\(A\)は\textbf{コンパクト}であるという．
+\end{MyDefinition}
+
+\begin{MyTheorem}[][compact_separation]
+  コンパクト集合\(A\subset \R^n\)と\(A\)に属さない\(x \in \R^n\)に対して，互いに素な開集合\(U, V\)が存在して，\(A \subset U\)かつ\(x \in V\)をみたす．
+\end{MyTheorem}
+\begin{proof}
+  まず，\(A=\set{a}\)が一点集合なら可能である．例えば，\(\varepsilon = |x-a|/2 > 0\)とすれば，\(U = U(a, \varepsilon)\)と\(V = U(x, \varepsilon)\)は互いに素な開集合であって，\(A \subset U\)かつ\(x \in V\)をみたす．そうでないときを考える．任意の\(a \in A\)に対して，互いに素な開集合\(O_1, O_2\)がとれて，\(a \in O_1\)かつ\(x \in O_2\)をみたす．このとき，\(x \notin \overline{O_1}\)である．つまり，\(a \in O_1\)かつ\(x \notin \overline{O_1}\)をみたすような開集合\(O_1\)がとれる．いま，\(W = \set{Oは開集合: x \notin \overline O}\)とすれば，\(W\)は\(A\)の開被覆である．\(A\)はコンパクトだから，ある有限部分集合\(\set{O_i}_{i=1}^k\)が存在して，\(A \subset \bigcup_{i=1}^k O_i\)をみたす．\(U = \bigcup_{i=1}^k O_i\)とすれば，\(U\)は開集合であって，\(A \subset U\)をみたす．また，\(x \notin \overline O_i\)だから，\(x \notin \overline U = \bigcup_{i=1}^k \overline O_i\)である．そこで，\(V = \paren{\overline U}^c\)とすれば，\(V\)は開集合であって，\(x \in V\)をみたし，\(U\)と\(V\)は互いに素である．
+\end{proof}
+
+\begin{MyTheorem}[ハイネ・ボレルの定理][heine_borel_theorem]
+  \(A \subset \R^n\)がコンパクトであるための必要十分条件は，\(A\)が有界閉集合となることである．
+\end{MyTheorem}
+\begin{proof}
+  必要性：まず，コンパクト集合が有界であることを示す．これは対偶を考えて，有界でない集合\(A\)がコンパクトではないことを示せばよい．\(A\)が有界でないとすると，\(U_i = \set{x \in \R^n : |x| < i}\)とすれば，\(\set{U_i}_{i=1}^\infty\)は\(A\)の開被覆である．任意の有限部分集合\(\set{U_{i_j}}_{j=1}^k\)をとると，
+  \[ A \cap \paren{\bigcup_{j=1}^k U_{i_j}}^c = A \cap \set{x \in \R^n : |x| \ge \max\set{i_1, \dots, i_k}} \ne \emptyset. \]
+  よって，\(A\)はコンパクトでない．次に，コンパクト集合が閉集合であることを示す．\(x \in A^c\)をとる．\cref{thm:compact_separation}より，互いに素な開集合\(U, V\)が存在して，\(A \subset U\)かつ\(x \in V\)をみたす．\(A^c\)は\(V\)を含むから，\(A^c\)は開集合である．つまり，\(A\)は閉集合である．
+
+  十分性：まず，\(A\)が有界閉区間の時について示す．背理法によって証明する．\(A\)がコンパクトでないと仮定する．\(A\)の開被覆\(U = \set{U_\lambda}_{\lambda \in \Lambda}\)を，\(U\)の任意の有限部分集合が，\(A\)の被覆とならないようにとる．\(A = [a_{01}, b_{01}] \times \dots \times [a_{0n}, b_{0n}]\)として，この区間をそれぞれで二等分し，得られる\(2^n\)個の閉区間を考える．この\(2^n\)個の閉区間のうち，\(U\)の有限部分集合で被覆できないものがある．そのような閉区間を\([a_{11}, b_{11}] \times \dots \times [a_{1n}, b_{1n}]\)とする．これを繰り返すことで，\(\paren{a_{i1}}_{i\in\N}, \paren{b_{i1}}_{i\in\N}, \dots, \paren{a_{in}}_{i\in\N}, \paren{b_{in}}_{i\in\N}\)を得る．いま，\(|a_{ij}-b_{ij}| = 2^{-i}|a_{0j}-b_{0j}| \to 0 \ (j \to \infty)\)で，区間列\(\paren{[a_{ij}, b_{ij}]}_{i\in\N}\)は非増加列であるから，閉区間\([a_{i1}, b_{i1}] \times \dots \times [a_{in}, b_{in}]\)はある点\(c\)を含む（\cref{thm:interval_shrinking_method}）．この\(c\)について，\(c \in A\)であるから，\(c \in U_\lambda\)となるような\(U_\lambda\)が存在する．\(U_\lambda\)は開集合だから，ある\(\varepsilon > 0\)が存在して，\( U(c, \varepsilon) \subset U_\lambda\)となる．\(\varepsilon\)に対して，ある\(N \in \N\)が存在して，閉区間\([a_{N1}, b_{N1}] \times \dots \times [a_{Nn}, b_{Nn}]\)は\(U(c, \varepsilon)\)に含まれる．つまり，この閉区間は\(U_\lambda\)に含まれる．これは，\(U\)の有限部分集合で被覆できないようにとったはずだから矛盾する．
+
+  次に，\(A\)が一般の有界閉集合のときについて示す．\(A\)は有界だから，ある\(A\)を含むような有界閉区間\(K\)がとれる．\(A\)の開被覆\(U\)をとる．いま，\(U \cup \set{A^c}\)は\(K\)の開被覆であるから，\(U\)の有限部分集合\(\set{U_i}_{i=1}^k\)が存在して，\(K \subset \bigcup_{i=1}^k U_i \cup A^c\)をみたす．このとき，\(\set{U_i}_{i=1}^k\)は\(A\)の被覆になっているから，\(A\)はコンパクトである．
+\end{proof}
+
+必要性の有界についての証明は，「ハウスドルフ空間のコンパクト集合は閉集合」という事実の証明になっている．十分性の有界閉集合についての証明は，「コンパクト空間における閉集合はコンパクト集合」という事実の証明になっている．
+
+\subsection{中間値の定理}
+\label{sec:intermediate_value_theorem}
+
+ここでは，計算に役立つようなものというよりかは，私が気になったことのまとめとなっている．
+
+\begin{MyTheorem}[中間値の定理][intermediate_value_theorem]
+  有界閉区間\(I=[a, b]\)上で連続な実数値関数\(f\)について，\(f(a)\)と\(f(b)\)の間の任意の値\(c\)に対して，\(I\)上の点\(x\)が存在して，\(f(x) = c\)をみたす．
+\end{MyTheorem}
+\begin{proof}
+  \(f(a) < f(b)\)とする．\(x = (a + b) / 2\)として，\(f(x)\)と\(c\)を比較する．\(f(x) = c\)ならば，\(x\)が求める点である．\(f(x) < c\)ならば，\(a = x\)とすれば，\(f(a) < c < f(b)\)となる．\(f(x) > c\)ならば，\(b = x\)とすれば，\(f(a) < c < f(b)\)となる．この操作を繰り返すことで，区間列\(\paren{[a_i, b_i]}_{i\in\N}\)を得るか，有限回で\(f(x) = c\)をみたす点が得られる．得られた区間列は非増加かつ，\(|a_i - b_i| = 2^{-i}(b-a) \to 0 \ (i \to \infty)\)であるから，区間列は一点集合\(\set{x}\)に収束する（\cref{thm:interval_shrinking_method}）．この点\(x\)について，\(\lim_{i \to \infty} a_i = x = \lim_{i \to \infty} b_i\)であり，\(f(a_i) \le c \le f(b_i)\)がつねに成り立つから，\(f\)の連続性と\cref{prop:squeeze_principle}より，\(f(x) = c\)が成り立つ．
+\end{proof}
+
+\begin{MyCorollary}[][continuous_image_of_interval]
+  \(f\)は区間\(I \subset \R\)上の実数値連続関数であるとする．このとき，\(f(I)\)は区間である．
+\end{MyCorollary}
+\begin{proof}
+  \(a = \inf f(I)\), \(b = \sup f(I)\)とする（\(a = -\infty, a=+\infty\)なども許すこととする）．\((a, b) \subset f(I)\)を示せばよい．\(c \in (a, b)\)をとる．\(a \le f(x_1) < c < f(x_2) \le b\)をみたすような\(x_1, x_2 \in I\)がとれる．\(x_1 < x_2\)なら，\([x_1, x_2]\)上で\cref{thm:intermediate_value_theorem}を適用すれば，\(c \in f(I)\)がわかる．\(x_1 > x_2\)も同様で，\(x_1 = x_2\)となることはない．
+\end{proof}
+
+\begin{MyCorollary}[][continuous_image_of_compact_interval]
+  有界閉区間\(I \subset \R\)上の実数値連続関数\(f\)について，\(f(I)\)は有界閉区間である．
+\end{MyCorollary}
+\begin{proof}
+  \(f(I)\)は区間で，コンパクトであるから（\cref{thm:extreme_value_theorem}），\(f(I)\)は有界閉区間である．
+\end{proof}
+
+
+\begin{MyLemma}[逆関数の単調性][inverse_function_monotonicity]
+  \(I \subset \R\)は区間で，\(f : I \to \R\)は（狭義）単調関数であるとする．\(f\)は逆関数\(f^{-1} : f(I) \to I\)を持ち，\(f^{-1}\)も単調である．
+\end{MyLemma}
+\begin{proof}
+  まず，\(f: I \to f(I)\)は明らかに全射で，単調性から単射だから，逆関数\(f^{-1} : f(I) \to I\)が存在する．
+  \(f\)が増加関数であるとする．\(y_1 < y_2\)をみたすような\(y_1, y_2 \in f(I)\)をとる．このとき，ある\(x_1, x_2 \in I\)が存在して，\(f(x_1) = y_1\)かつ\(f(x_2) = y_2\)をみたす．\(f\)は単調増加関数なので，\(x_1 < x_2\)となる．したがって，\(f^{-1}(y_1) = x_1 < x_2 = f^{-1}(y_2)\)となる．\(f\)が減少関数でも同様に示せる．
+\end{proof}
+
+\begin{MyLemma}[][injective_continuous_function_monotone]
+  区間\(I \subset \R\)上の連続関数\(f: I \to \R\)が単射なら，\(f\)は（狭義）単調関数である．
+\end{MyLemma}
+\begin{proof}
+  \(x_1 < x_2 < x_3\)をみたすように任意に\(x_1, x_2, x_3 \in I\)をとる．\(f(x_1), f(x_2)\)と\(f(x_2), f(x_3)\)の大小関係の組み合わせは，\(4\)通りあるが，次の二つはいずれも\(f\)の単射性に矛盾する：
+  \begin{itemize}
+    \item \(f(x_1) < f(x_2) > f(x_3)\). このとき，\(\max\set{f(x_1), f(x_3)} < a < f(x_2)\)なる\(a\)がとれる．このとき，\(f(x) = a\)をみたすような\(x\)が，\([x_1, x_2], [x_2, x_3]\)のどちらにも存在する．いま，\(f(x_2) \ne a\)であるから，\(f\)は単射であることに矛盾する．
+    \item \(f(x_1) > f(x_2) < f(x_3)\). このとき，\(\min\set{f(x_1), f(x_3)} > a > f(x_2)\)なる\(a\)がとれる．あとは，同様である．
+  \end{itemize}
+  したがって，\(f(x_1) < f(x_2) < f(x_3)\)か，\(f(x_1) > f(x_2) > f(x_3)\)のどちらかである．
+
+  つぎに，\(y_1 < y_2,  y_3 < y_4\)をみたすように，\(y_1, y_2, y_3, y_4 \in I\)を任意にとる．このとき，\(f(y_1) < f(y_2)\)かつ\(f(y_3) > f(y_4)\)か，\(f(y_1) > f(y_2)\)かつ\(f(y_3) < f(y_4)\)が成り立つと仮定する．まず前者を考える．\(y_i\)を小さい順に並べたものを，\((z_i)\)とする．\(y_1 = y_3\)や，\(y_2 = y_4\)となったりすることはあるが，これは，先ほどの結果より直ちに矛盾する．したがって，\(z_1 < z_2 < z_3 < z_4\)である．\(f(z_1) < f(z_2) < f(z_3) < f(z_4)\)か，\(f(z_1) > f(z_2) > f(z_3) > f(z_4)\)のどちらかしかありえないが，\(y_1\), \(y_2\)だったものを比較することで，増加列になり，\(y_3\), \(y_4\)だったものを比較すれば，減少列になり，矛盾する．後者も同様である．したがって，\(f(y_1) < f(y_2)\)かつ\(f(y_3) < f(y_4)\)か，\(f(y_1) > f(y_2)\)かつ\(f(y_3) > f(y_4)\)のどちらかしかありえない．
+
+  さて，集合\(A, B \subset I^2\)を，次のように定める：
+  \begin{align*}
+    A & = \set{(x_1, x_2) \in I^2 : x_1 < x_2, f(x_1) < f(x_2)}, \\
+    B & = \set{(x_1, x_2) \in I^2 : x_1 < x_2, f(x_1) > f(x_2)}.
+  \end{align*}
+  いま，どちらか一方は空集合で，\(A \cup B = \set{(x_1, x_2) \in I^2 : x_1 < x_2}\)である．もし，\(A = \emptyset\)ならば，\(f\)は減少関数となり，もし，\(B = \emptyset\)ならば，\(f\)は増加関数となる．
+\end{proof}
+
+\begin{MyLemma}[][injective_monotone_function_continuous]
+  \(I, J\)は\(\R\)上の区間で，\(f: I \to J\)は全射（広義）単調関数であるとする．このとき，\(f\)は連続である．
+\end{MyLemma}
+\begin{proof}
+  \cref{thm:limit_reformulation_sequence,thm:monotone_sequence_convergence}より，明らかであるが，ここでは改めて証明する（とくに\cref{thm:limit_reformulation_sequence}は第一可算公理をみたすとして証明しているから，第一可算公理をみたさない空間での証明も必要だと思ったので）．
+
+  \(f\)が非減少関数のときを証明する．これが証明されれば，\(f\)が非増加なときは，\(-f\)について連続性が言えるから，\(f\)も連続である．\(x \in I\)を任意にとる．任意の\(\varepsilon > 0\)に対して，ある\(\delta > 0\)が存在して，\(I \cap U(x, \delta) \subset f^{-1}(J \cap U(f(x), \varepsilon))\)が成り立つことを示せば良い．
+  まず，\(f(x)\)が\(J\)の内点であるようなときを考える．\(f(x) - \varepsilon < f(y) < f(x)\)となるような\(y \in I\)が存在する．このような\(y\)の一つを\(y_1\)とおく．また，\(f(x) < f(z) < f(x) + \varepsilon\)となるような\(z \in I\)が存在する．このような\(z\)の一つを\(z_1\)とおく．いま，\(f\)は非減少関数であるから，\(y_1 < x < z_1\)である．\(\delta = \min\set{|x - y_1|, |x - z_1|}\)とすれば，\(I \cap U(x, \delta) \subset [y_1, z_1]\)である．また，\(f([y_1, z_1]) \subset J \cap U(f(x), \varepsilon)\)であるから，\(I \cap U(x, \delta) \subset f^{-1}(J \cap U(f(x), \varepsilon))\)が成り立つ．\(f(x)\)が\(J\)の境界となるようなときを考える．たとえば，\(f(x)\)が\(J\)の最小値となっているような場合，単調性から\(y \le x\)について，\(f(y) = f(x)\)が成り立つ．そのため，\(y_1\)としては\(-\infty\)をとれば良い．また，\(f(x)\)が\(J\)の最大値となっているような場合も同様である．
+\end{proof}
+
+\begin{MyTheorem}[逆関数の連続性][continuity_of_inverse_function]
+  区間\(I \subset \R\)上の連続関数\(f: I \to \R\)が逆関数
+  \(f^{-1}: f(I) \to I\)を，持つならば，逆関数も連続である．
+\end{MyTheorem}
+\begin{proof}
+  まず，\(f: I \to f(I)\)は全単射である．\(f\)は単射であるから，単調である（\cref{lem:injective_continuous_function_monotone}）．よって，\(f^{-1} : f(I) \to I\)は単調である（\cref{lem:inverse_function_monotonicity}）．\(f(I)\)は区間で（\cref{cor:continuous_image_of_interval}），\(f^{-1}\)は単調な全射だから，\(f^{-1}\)は連続である（\cref{lem:injective_monotone_function_continuous}）．
+\end{proof}
+
+\begin{MyTheorem}[][differentiability_of_inverse_function]
+  \(f\)は\(a \in \R\)の近くで定義された実数値関数であるとする．\(f'(a) \ne 0\)かつ\(f\)は\(a\)の近くで逆関数を持つなら，\((f^{-1})'(f(a)) = 1/f'(a)\)が成り立つ．
+\end{MyTheorem}
+\begin{proof}
+  \[ \lim_{h \to 0}\frac{f^{-1}(f(a) + h) - f^{-1}(f(a))}{h} = c = (f^{-1})'(f(a)) \]
+  とおく．\(f\)は\(a\)で連続で，\(a\)近くの単射性から，\(f(a + h') - f(a)\)は\(h' \to 0\)のときに\(0\)に収束し，常に\(0\)と異なる．よって，\(h = f(a + h') - f(a)\)とすることができて，
+  \[ c = \lim_{h' \to 0} \frac{(a + h') - a}{f(a + h') - f(a)} = \lim_{h' \to 0}\frac{1}{\frac{f(a + h') - f(a)}{h'}} = \frac{1}{f'(a)}. \]
+\end{proof}
+
+\subsection{平均値の定理}
+\label{sec:mean_value_theorem}
+
+\begin{MyTheorem}[][extreme_value_theorem_differentiable_function]
+  \(A \subset \R\), \(f: A \to \R\)が\(a \in A^i\)で極値をとり，\(f\)が点\(a\)で微分可能であるとする．このとき，\(f'(a) = 0\)が成り立つ．
+\end{MyTheorem}
+\begin{proof}
+  \(f\)が\(a\)で極小値をとるなら，\(-f\)では\(a\)で極大値をとるから，\(f\)が\(a\)で極大値をとる場合だけを考えれば十分である．\(a \in A^i\)より，ある\(\delta > 0\)が存在して，\(U(a, \delta) \subset A\)である．\(f\)は\(a\)で極大値をとるから，任意の\(x \in U(a, \delta)\)に対して，\(f(x) \le f(a)\)が成り立つ．\(|h| < \delta\)をみたすような\(h\)をとる．このとき，\(h > 0\)なら，
+  \[ \frac{f(a+h) - f(a)}{h} \le 0. \]
+  \(h < 0\)なら，
+  \[ \frac{f(a+h) - f(a)}{h} \ge 0. \]
+  \(f\)は\(a\)で微分可能だから，\([f(a + h) - f(a)]/h\)の極限は存在し，\(h \to +0\)のときの極限値と\(h \to -0\)のときの極限値は等しい．これらはそれぞれ，\(0\)以上で\(0\)以下であるから，\(f'(a) = 0\)が成り立つ．
+\end{proof}
+
+\begin{MyTheorem}[ロルの定理][rolle_theorem]
+  実数値関数\(f\)は，有界閉区間\(I=[a, b]\)上で連続で，\(I^i\)上で微分可能であるとする．このとき，\(f(a) = f(b)\)ならば，ある点\(c \in I^i\)が存在して，\(f'(c) = 0\)をみたす．
+\end{MyTheorem}
+\begin{proof}
+  \(f\)が定数の場合はあきらかである．そうでないとき，\(x\)が取れて，\(f(x) \ne f(a)\)とできる．まず，\(f(x) > f(a)\)のときを考える．\(I\)はコンパクトだから，\(f\)は\(I\)上で最大値\(f(c)\)をとる（\cref{thm:extreme_value_theorem}）．このとき，\(f(c) \ge f(x) > f(a)\)であるから，\(c \in I^i\)である．\(f\)は\(c\)で極大値をとるから，\cref{thm:extreme_value_theorem_differentiable_function}より，\(f'(c) = 0\)が成り立つ．\(f(x) < f(a)\)のときも同様である．
+\end{proof}
+
+\begin{MyTheorem}[平均値の定理][mean_value_theorem]
+  実数値関数\(f\)は，有界閉区間\(I=[a, b]\)上で連続で，\(I^i\)上で微分可能であるとする．このとき，ある点\(c \in I^i\)が存在して，
+  \[ f'(c) = \frac{f(b) - f(a)}{b - a}. \]
+\end{MyTheorem}
+\begin{proof}
+  \(g(x) = f(x) - \frac{f(b) - f(a)}{b - a}(x - a)\)とすれば，\(g\)は\(I\)上で連続で，\(I^i\)上で微分可能である．また，\(g(a) = g(b)\)であるから，\cref{thm:rolle_theorem}より，ある点\(c \in I^i\)が存在して，\(g'(c) = 0\)をみたす．このとき，
+  \[ f'(c) = \frac{f(b) - f(a)}{b - a}. \]
+\end{proof}
+
+\begin{MyTheorem}[][constant_function_derivative_zero]
+  \(I \subset \R\)を区間として，\(f: I \to \R^n\)は微分可能だとする．このとき，次は同値である：
+  \begin{enumerate}
+    \item \(f\)は定数関数である．
+    \item \(f'(x) = 0 \ (\forall x \in I).\)
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)\(\implies\)(ii)： 定義より明らか．
+
+  (ii)\(\implies\)(i)： まず，\(n = 1\)のときについて示す．\(a\in I\)をとり固定する．\(x \in I\)を任意にとる．\(a < x\)のとき，\cref{thm:rolle_theorem}を\(f\)に適用すれば，ある点\(c \in (a, x)\)が存在して，
+  \[ 0 = f'(c) = \frac{f(x) - f(a)}{x - a}. \]
+  よって，\(f(x) = f(a)\)が成り立つ．同様にして，\(x < a\)のときも\(f(x) = f(a)\)が成り立つ．\(x\)は任意にとったから，\(f\)は定数関数である．\(n > 1\)のときは各成分ごとに同様の議論ができるから，\(f\)は定数関数である．
+\end{proof}
+
+\begin{MyTheorem}[][monotone_function_derivative_nonnegative]
+  有界閉区間\(I = [a, b]\)上の実数値関数\(f\)が，\(I\)上で連続で，\(I^i\)上で微分可能であるとする．このとき，次がそれぞれ成り立つ：
+  \begin{enumerate}
+    \item \(f\)は\(I\)上で広義単調増加であるための必要十分条件は，\(f'(x) \ge 0 \ (\forall x \in I^i)\)となることである．
+    \item \(f\)は\(I\)上で（狭義）単調増加であるための必要十分条件は，\(f'(x) \ge 0 \ (\forall x \in I^i)\)かつ，\(I\)の正の長さの任意の部分区間上で\(f'\)は恒等的に\(0\)とならない．
+    \item \(f\)は\(I\)上で広義単調減少であるための必要十分条件は，\(f'(x) \le 0 \ (\forall x \in I^i)\)となることである．
+    \item \(f\)は\(I\)上で（狭義）単調減少であるための必要十分条件は，\(f'(x) \le 0 \ (\forall x \in I^i)\)かつ，\(I\)の正の長さの任意の部分区間上で\(f'\)は恒等的に\(0\)とならない．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)：必要性について．任意の\(x, y \in I^i\)について，\(x > y\)ならば，
+  \[ \frac{f(x) - f(y)}{x - y} \ge 0  \]
+  が常に成り立つ．ここで，\(y \to x-0\)とすれば，\(f'(x) \ge 0\)が成り立つ．十分性について．任意の\(x, y \in I\)について，\(x > y\)ならば，\cref{thm:mean_value_theorem}を\(f\)に適用すれば，ある点\(c \in (y, x)\)が存在して，
+  \[ f(x) - f(y) = f'(c)(x - y) \ge 0. \]
+
+  (ii)：必要性について．(i)と同様に，\(f'(x) \ge 0 \ (\forall x \in I^i)\)が成り立つ．また，\(I\)の正の長さの任意の部分区間\(J\)上で\(f'\)は恒等的に\(0\)となったら，そこで\(f\)は定数関数になり\(f\)の単射性に矛盾するから，\(J\)上で恒等的に\(0\)とならない．十分性について．(i)より，\(f\)は\(I\)上で広義単調増加である．もし，\(x, y \in I\ (x > y)\)だとして，\(f(x) = f(y)\)となるなら，\([x, y]\)上で\(f\)は定値で，\([x, y]\)上で\(f'\)は恒等的に\(0\)となるから，矛盾する．
+
+  (iii), (iv)：\(f\)が（広義）単調減少であることは，\(-f\)が（広義）単調増加であることと同値であることから，明らかである．
+\end{proof}
+
+\begin{MyTheorem}[][second_derivative_test]
+  実数値関数\(f\)は\(a\in\R\)の近傍で\(C^1\)級で，\(f'(a) = 0\)かつ\(f''(a)\)が存在するとする．このとき，次のことが成り立つ：
+  \begin{enumerate}
+    \item \(f''(a) > 0\)ならば，\(f\)は\(a\)で（狭義）極小値をとる．
+    \item \(f''(a) < 0\)ならば，\(f\)は\(a\)で（狭義）極大値をとる．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)：\(f''(a)>0\)だから，ある\(\delta_0 > 0\)が存在して，\(a < x < a + \delta_0\)ならば，
+  \[ \frac{f'(x) - f'(a)}{x - a} > 0 \]
+  とできる．\(x > a, f'(a) = 0\)より，\(f'(x) > 0\)である．同様に，ある\(\delta_1 > 0\)が存在して，\(a - \delta_1 < x < a\)ならば，
+  \[ \frac{f'(x) - f'(a)}{x - a} > 0 \]
+  とできる．\(x < a, f'(a) = 0\)より，\(f'(x) < 0\)である．つまり，\([a, a + \delta_0)\)上で\(f\)は増加し，\((a - \delta_1, a]\)上で\(f\)は減少するから，\(f\)は\(a\)で（狭義）極小値をとる．
+
+  (ii)：\(-f\)に対して(i)を適用すれば，\(-f\)は\(a\)で（狭義）極小値をとるから，\(f\)は\(a\)で（狭義）極大値をとる．
+\end{proof}
+
+\begin{MyTheorem}[導関数の中間値の定理][intermediate_value_theorem_differentiable_function]
+  \(f\)は有界閉区間\(I=[a, b]\)上で微分可能な実数値関数であるとする．このとき，\(f'(a)\)と\(f'(b)\)の間の任意の値\(c\)に対して，\(I\)上の点\(x\)が存在して，\(f'(x) = c\)をみたす．
+\end{MyTheorem}
+\begin{proof}
+  \(f'(a) < f'(b)\)とする．\(g(x) = f(x) - cx\)とすれば，\(g\)は\(I\)上で微分可能である．\(g\)は\(I\)上で連続でもあるから，\(g\)は点\(\alpha\in I\)で最小値をとる（\cref{thm:extreme_value_theorem}）．
+  \[ g'(a) = f'(a) - c < 0 < f'(b) - c = g'(b) \]
+  だから，ある\(\delta_1 > 0\)が存在して，\(a < x < a + \delta_1\)ならば，
+  \[ \frac{g(x) - g(a)}{x - a} < 0 \]
+  が成り立つ．とくにこの時，\(g(x) < g(a)\)である．とくに，\(a < \alpha\)である．同様にして，\(\delta_2 > 0\)が存在して，\(b - \delta_2 < x < b\)ならば，
+  \[ \frac{g(x) - g(b)}{x - b} > 0 \]
+  が成り立つ．とくにこの時，\(g(x) < g(b)\)である．とくに，\(\alpha < b\)である．よって，\(\alpha \in I^i\)である．\(g\)は\(\alpha\)で極大値をとるから，\cref{thm:extreme_value_theorem_differentiable_function}より，\(g'(\alpha) = 0\)が成り立つ．このとき，
+  \[ f'(\alpha) = c. \]
+  \(f'(a) > f'(b)\)では，\(-f\)を考えれば，\(f'(a) < f'(b)\)のときに帰着する．\(f'(a) = f'(b)\)のときは明らかである．
+\end{proof}
+
+
+\begin{MyTheorem}[コーシーの平均値の定理][cauchy_mean_value_theorem]
+  \(f, g\)は有界閉区間\(I=[a, b]\)上で連続，\(I^i\)上で微分可能，\(g(a) \ne g(b)\)で\(g'\)は\(I^i\)上で\(0\)をとらないとする．このとき，ある点\(c \in I^i\)が存在して，
+  \[ \frac{f'(c)}{g'(c)} = \frac{f(b) - f(a)}{g(b) - g(a)}. \]
+\end{MyTheorem}
+\begin{proof}
+  \[ h(x) = \begin{vmatrix}
+      f(a) & g(a) & 1 \\
+      f(b) & g(b) & 1 \\
+      f(x) & g(x) & 1
+    \end{vmatrix}
+  \]
+  とおく．\(h\)は\(I\)上で連続で，\(I^i\)上で微分可能である．また，\(h(a) = h(b) = 0\)であるから，\cref{thm:rolle_theorem}より，ある点\(c \in I^i\)が存在して，\(h'(c) = 0\)をみたす．このとき，
+  \begin{align*}
+    h'(c) = 0 & \iff \begin{vmatrix}
+                       f(a)  & g(a)  & 1 \\
+                       f(b)  & g(b)  & 1 \\
+                       f'(c) & g'(c) & 0
+                     \end{vmatrix} = f(b)g'(c) + g(a)f'(c) - f(a)g'(c) - g(b)f'(c) = 0 \\
+              & \iff \frac{f'(c)}{g'(c)} = \frac{f(b) - f(a)}{g(b) - g(a)}.
+  \end{align*}
+\end{proof}
+
+\begin{MyTheorem}[テイラーの定理][taylor_theorem]
+  \([a, x]\)上で\(n\)階微分可能な実数値関数\(f\)について，ある点\(c \in (a, x)\)が存在して，
+  \[ f(x) = \sum_{k=0}^{n-1} \frac{f^{(k)}(a)}{k!}(x - a)^k + \frac{f^{(n)}(c)}{n!}(x - a)^n. \]
+\end{MyTheorem}
+\begin{proof}
+  \[ g(x) = f(x) - \sum_{k=0}^{n-1} \frac{f^{(k)}(a)}{k!}(x - a)^k \]
+  とおけば，\(g\)は\([a, x]\)上で\(n\)階微分可能である．また，
+  \[ g^{(k)}(a) = 0,\quad g^{(n)} = f^{(n)} \quad (0 \le k < n) \]
+  が成り立つ．\(g\)と\(x \mapsto (x - a)^n\)を\([a, x]\)上で\cref{thm:cauchy_mean_value_theorem}に適用すれば，ある点\(c_1 \in (a, x)\)が存在して，
+  \[ \frac{g'(c_1)}{n(c_1 - a)^{n-1}} = \frac{g(x)}{(x - a)^n} \]
+  が成り立つ．\(g'\)と\(x \mapsto (x - a)^{n-1}\)を\([a, c_1]\)上で\cref{thm:cauchy_mean_value_theorem}に適用すれば，ある点\(c_2 \in (a, c_1)\)が存在して，
+  \[ \frac{g''(c_2)}{(n-1)(c_2 - a)^{n-2}} = \frac{g'(c_1)}{(c_1 - a)^{n-1}} \implies \frac{g''(c_2)}{n(n-1)(c_2 - a)^{n-2}} = \frac{g(x)}{(x - a)^n} \]
+  が成り立つ．これを繰り返すことで，ある点\(c_{n} \in (a, c_{n-1})\)が存在して，
+  \[ \frac{g^{(n)}(c_{n})}{n!} = \frac{g(x)}{(x - a)^n} \]
+  が成り立つ．このとき，\(g^{(n)} = f^{(n)}\)であるから，
+  \[ g(x) = \frac{f^{(n)}(c_{n})}{n!}(x - a)^n. \]
+  \(c = c_{n}\)とすれば，\(c \in (a, x)\)で，
+  \[ f(x) = \sum_{k=0}^{n-1} \frac{f^{(k)}(a)}{k!}(x - a)^k + \frac{f^{(n)}(c)}{n!}(x - a)^n. \]
+\end{proof}
+\([x, a]\)でも同じように示せる．\(\frac{f^{(n)}(c)}{n!}(x - a)^n\)を\textbf{\(\bm n\)次剰余項}と言い，\(R_n(x)\)と表すことにする．\(f\)が\(a\)を含むような区間\(I\)上で\(C^\infty\)級であり，各点\(x\in I\)に対して\(\lim_{n\to\infty}R_n(x)=0\)が成り立つとき，任意の\(x\in I\)に対して，
+\[ f(x) = \sum_{k=0}^{\infty} \frac{f^{(k)}(a)}{k!}(x - a)^k \]
+が成り立つ．この式を\textbf{\(\bm a\)を中心とする\(\bm f\)のテイラー展開}と言う．
+
+\begin{MyTheorem}[][taylor_theorem_approximation]
+  実数値関数\(f\)は\(a\in\R\)の近傍で\(n-1\)階微分可能で，\(f^{(n)}(a)\)が存在するとする．このとき，
+  \[ f(x) = \sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x - a)^k + s(x) \]
+  と\(s(x)\)を定義すれば，\(s(x) \in o((x-a)^n) \ (x \to a)\)である．つまり，任意の\(\varepsilon > 0\)に対して，\(a\)の十分近くの\(x\ne a\)で，\(|s(x)| \le \varepsilon|x-a|^n\)が成り立つ．
+\end{MyTheorem}
+\begin{proof}
+  \cref{thm:taylor_theorem}の証明と同様に，\(g\)と\(c_i\)をとれば，
+  \[ \frac{g(x)}{(x - a)^n} = \frac{g^{(n-1)}(c_{n-1})}{n!(c_{n-1} - a)} \]
+  と書ける．ここで，\(x\to a\)とすれば，\(c_{n-1}\to a\)で常に\(c_{n-1}\ne a\)であるから，
+  \[ \lim_{x\to a} \frac{g(x)}{(x - a)^n} = \frac{g^{(n)}(a)}{n!} = \frac{f^{(n)}(a)}{n!} \]
+  \(t(x) = g(x)/(x-a)^n - f^{(n)}(a)/n!\)とおけば，\(\lim_{x\to a}t(x)=0\)で，\(s(x)=t(x)(x-a)^n\)である．ここで，任意に\(\varepsilon > 0\)をとると，\(a\)に十分近い\(x\ne a\)で，\(|t(x)| < \varepsilon\)が成り立つから，\(|s(x)| < \varepsilon|x-a|^n\).
+\end{proof}
+
+\begin{MyTheorem}[][convex_function_second_derivative]
+  実数値関数\(f\)が区間\(I \subset \R\)上で\(f''\)が存在するとする．このとき，次は同値である：
+  \begin{enumerate}
+    \item \(f\)は\(I\)上で下に凸である．
+    \item \(a < x < b\)をみたす任意の\(x, a, b \in I\)について，
+          \[ \frac{f(x) - f(a)}{x - a} \le \frac{f(b) - f(a)}{b - a} \le \frac{f(b) - f(x)}{b - x} \]
+          が成り立つ．
+    \item \(f''(x) \ge 0 \ (\forall x \in I)\)が成り立つ．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)\(\implies\)(ii)： \(a < x < b\)をみたす任意の\(x, a, b \in I\)について，\(t = (x - a)/(b - a)\)とおくと，\(t \in (0, 1)\)である．\(f\)は下に凸であるから，
+  \[ f(x) = f(ta + (1-t)b) \le tf(a) + (1-t)f(b).\]
+  よって，
+  \begin{align*}
+    \frac{f(b) - f(a)}{b - a} & = \frac{[tf(a) + (1 - t)f(b)] - f(a)}{x - a} \ge \frac{f(x) - f(a)}{x - a}, \\
+                              & = \frac{f(b) - [tf(a) + (1 - t)f(b)]}{b - x} \ge \frac{f(b) - f(x)}{b - x}.
+  \end{align*}
+
+  (ii)\(\implies\)(iii)： \(x \to a+0\)とすれば，
+  \[ f'(a) \le \frac{f(b) - f(a)}{b - a}.\]
+  \(x \to b-0\)とすれば，
+  \[ \frac{f(b) - f(a)}{b - a} \le f'(b). \]
+  よって，\(f'\)は\(I\)上で非減少だから，\(f''(x) \ge 0 \ (\forall x \in I)\)が成り立つ．
+
+  (iii)\(\implies\)(i)： \(a < x < b\)をみたす\(x, a, b \in I\)を任意にとる．\cref{thm:taylor_theorem}を\(f\)に適用すれば，ある点\(c \in (a, x)\)が存在して，
+  \[ f(a) = f(x) + f'(x)(a - x) + \frac{f''(c)}{2}(a - x)^2 \ge f(x) + f'(x)(a - x) \]
+  が成り立つ．同様にして，ある点\(d \in (x, b)\)が存在して，
+  \[ f(b) = f(x) + f'(x)(b - x) + \frac{f''(d)}{2}(b - x)^2 \ge f(x) + f'(x)(b - x) \]
+  が成り立つ．ここで，\(t\in(0,1)\)を任意にとり，\(a < ta + (1-t)b < b\)であるから，\(x = ta + (1-t)b\)すれば，
+  \begin{align*}
+    f(a)                       & \ge f(ta + (1-t)b) + f'(x)(1-t)(a - b) \\
+    f(b)                       & \ge f(ta + (1-t)b) + f'(x)t(b - a)     \\
+    \implies tf(a) + (1-t)f(b) & \ge f(ta + (1-t)b).
+  \end{align*}
+\end{proof}
+
+\begin{MyCorollary}[][strictly_convex_function_second_derivative]
+  実数値関数\(f\)が区間\(I \subset \R\)上で\(f''\)が存在するとする．このとき，次は同値である：
+  \begin{enumerate}
+    \item \(f\)は\(I\)上で下に狭義凸である．
+    \item \(a < x < b\)をみたす任意の\(x, a, b \in I\)について，
+          \[ \frac{f(x) - f(a)}{x - a} < \frac{f(b) - f(a)}{b - a} < \frac{f(b) - f(x)}{b - x} \]
+          が成り立つ．
+    \item \(x \ne a\)について，\(f(a) > f(x) + f'(x)(a - x)\)が成り立つ．
+  \end{enumerate}
+\end{MyCorollary}
+\begin{proof}
+  (i)\(\implies\)(ii), (ii)\(\implies\)(iii), (iii)\(\implies\)(i)のそれぞれが，\cref{thm:convex_function_second_derivative}の証明と同様である．
+\end{proof}
+
+上に凸の場合でも不等号の向きが変わったものがそのまま成り立つ．
+
+\section{\texorpdfstring{\(\R\)}{R} 上の積分法}
+\label{sec:integral_R}
+
+\begin{MyTheorem}[ダルブーの定理][darboux_theorem]
+\end{MyTheorem}
+
+\begin{MyTheorem}[][monotone_function_integrable]
+  有界閉区間\(I = [a, b]\)上の実数値関数\(f\)が（広義）単調なら，\(f\)は\(I\)上で可積分である．
+\end{MyTheorem}
+\begin{proof}
+  \(f\)が非減少のときを示す．\(I\)の任意の分割
+  \[ \Delta : a = x_0 < x_1 < \dots < x_n = b \]
+  に対して，過剰和と不足和の差は，
+  \[ \sum_{i = 1}^n (f(x_i) - f(x_{i-1}))(x_i - x_{i-1}) \le |\Delta|\sum_{i=1}^n (f(x_i) - f(x_{i-1})) = |\Delta|(f(b) - f(a)) \to 0 \quad (|\Delta| \to 0) \]
+  である．\(f\)が非増加のときは，\(-f\)が非減少であるから，\(-f\)は可積分である．よって，\(f\)も可積分である．
+\end{proof}
+
+
+\begin{MyDefinition}[広義積分][improper_integral]
+  \(\R\)の半開区間\(I=[a, b)\) (\(b=+\infty\)でも良い)上で定義された関数\(f : I \to \R\)が広義可積分であるとは，
+  \begin{enumerate}
+    \item \([a, c] \subset I\)上で\(f\)が有界かつ可積分であること，
+    \item \(\lim_{c \to b-0} \int_a^c f(x) dx\)が存在すること，
+  \end{enumerate}
+  の二つの条件を満たすことをいう．このとき，\(\int_a^b f(x) dx\)を\(f\)の\(I\)上の広義積分と言い，\(\lim_{c \to b-0} \int_a^c f(x) dx\)と定義する．\((a, b]\)上で定義された関数の広義積分も同様に定義する．\((a, b)\)上で定義された関数の広義積分は，区間を分割してその両方が広義可積分であるときに広義可積分であるとする．
+\end{MyDefinition}
+
+
+
+% 解析入門Ⅰp290-
+
+\begin{MyProposition}[積分の三角不等式][integral_triangle_inequality]
+  \(f:[a, b]=I \to \R\)は\(I\)上可積分だとする．このとき，次が成り立つ：
+  \[\left|\int_a^b f(x) dx\right| \le \int_a^b |f(x)| dx.\]
+\end{MyProposition}
+\begin{proof}
+  \begin{align*}
+    \abs{\int_a^b f(x) dx}
+     & = \abs{\lim_{|\Delta|\to0}\sum_{i=1}^n f(\xi_i)(x_i - x_{i-1})} \ (a = x_0 < \dots < x_n = b, \xi_i \in [x_{i-1}, x_i]) \\
+     & = \lim_{|\Delta|\to0}\abs{\sum_{i=1}^n f(\xi_i)(x_i - x_{i-1})}                                                         \\
+     & \le \lim_{|\Delta|\to0}\sum_{i=1}^n |f(\xi_i)|(x_i - x_{i-1}) \ (\because \text{三角不等式}，\cref{prop:squeeze_principle})   \\
+     & = \int_a^b |f(x)| dx.
+  \end{align*}
+\end{proof}
+
+\begin{MyProposition}[単調性][monotonicity_integral]
+  \(f, g:[a, b] \to \R\)は\(I\)上可積分だとする．このとき，\(f(x) \le g(x)\)が成り立つならば，\(\int_a^b f(x) dx \le \int_a^b g(x) dx\)が成り立つ．
+\end{MyProposition}
+\begin{proof}
+  \cref{prop:integral_triangle_inequality}の証明と同様である．
+\end{proof}
+
+
+\begin{MyProposition}[コーシーの条件（定積分）][cauchy_condition_integral]
+  以下の条件は同値である：
+  \begin{enumerate}
+    \item \(\int_a^b f(x) dx\)が収束する．
+    \item \(\paren{\forall \varepsilon > 0}\paren{\exists c \in [a, b)}\paren{\forall s, t}\paren{c \le s < t < b \to |\int_s^t f(x) dx| < \varepsilon}.\)
+  \end{enumerate}
+\end{MyProposition}
+\begin{proof}
+  \(F(t)=\int_a^t f(x)dx\ (a\le t<b)\)とおけば，\cref{thm:cauchy_condition_function}より，\(\lim_{t\to b-0}F(t)\)が存在することと，任意の\(\varepsilon > 0\)に対してある\(c \in [a, b)\)が存在して，\(c \le s < t < b\)ならば\(|F(t) - F(s)| < \varepsilon\)が成り立つことは同値である．
+\end{proof}
+
+\begin{MyTheorem}[絶対収束・優関数][absolute_convergence_integral]
+  \(f, g:[a, b) \to \R\)が，\cref{dfn:improper_integral}(i)の条件を満たすとする．このとき，以下のことがそれぞれ成り立つ：
+  \begin{enumerate}
+    \item \(\int_a^b |f(x)| dx\)が収束するならば，\(\int_a^b f(x) dx\)も収束する．
+    \item \(|f(x)| \le g(x)\)が成り立ち，\(\int_a^b g(x) dx\)が収束するならば，\(\int_a^b f(x) dx\)も収束する．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)： \(a \le s < t < b\)をとる．\cref{prop:integral_triangle_inequality}より，
+  \[ \abs{\int_s^t f(x) dx} \le \int_s^t |f(x)| dx. \]
+  \(|f|\)がコーシーの条件を満たすなら，\(f\)もコーシーの条件を満たす．
+
+  (ii)：\(0 \le |f(x)| \le g(x)\)だから，\cref{prop:monotonicity_integral}より，\(a \le s < t < b\)をとると，
+  \[ \abs{\int_s^t |f(x)| dx} \le \abs{\int_s^t g(x) dx}. \]
+  \(g\)がコーシーの条件を満たすなら，\(|f|\)もコーシーの条件を満たすから，(i)より，\(f\)もコーシーの条件を満たす．
+\end{proof}
+(i)のように，\(|f|\)の積分が収束する時，\(f\)は\textbf{絶対収束}するという．(ii)のように，\(f\)がある関数\(g\)で抑えられていて，\(g\)の積分が収束する時，\(g\)を\(f\)の\textbf{優関数}と呼ぶ．
+
+% 優関数定理
+
+\section{数列と級数}
+\label{sec:sequence_series}
+
+\subsection{実数の連続性}
+\label{sec:continuity_R}
+
+連続の公理として，「上に有界な\(\R\)の部分集合は上限を持つ」というものを採用します．この章では，細かい性質は証明していないので，少し読みにくいかもしれません．気になる人は，杉浦『解析入門Ⅰ』の第Ⅰ章を参照してください．
+
+\begin{MyTheorem}[単調数列の収束性][monotone_sequence_convergence]
+  実数列\(\paren{a_n}_{n\in\N}\)が非減少で上に有界ならば，\(\lim_{n\to\infty}a_n=\sup\set{a_n:n\in\N}\)が成り立つ．また，非増加で下に有界ならば，\(\lim_{n\to\infty}a_n=\inf\set{a_n:n\in\N}\)が成り立つ．
+\end{MyTheorem}
+\begin{proof}
+  \(A=\set{a_n:n\in\N}\)とする．\(A\)は上に有界だから，\(b=\sup A\)が存在する．\(b\)は\(A\)の上限だから，任意の\(\varepsilon > 0\)に対して，ある\(N \in \N\)が存在して，\(a_N > b - \varepsilon\)となる．\(n > N\)ならば，\(b \ge a_n \ge a_N > b - \varepsilon\)となる．よって，前半の主張が成り立つ．後半も同様である．
+\end{proof}
+
+\begin{MyTheorem}[アルキメデスの原理][archimedean_principle]
+  任意の二つの実数\(x, y > 0\)に対して，ある\(n \in \N\)が存在して，\(nx > y\)が成り立つ．
+\end{MyTheorem}
+\begin{proof}
+  数列\(\paren{nx}_{n\in\N}\)は非減少である．主張は，\(\paren{nx}_{n\in\N}\)が上に有界でないということである．もし\(\paren{nx}_{n\in\N}\)が上に有界ならば，\cref{thm:monotone_sequence_convergence}より，\(\paren{nx}_{n\in\N}\)は\(\sup\set{nx:n\in\N} = s\)に収束する．\(s\)は上限だから，\(s - x < nx \le s\)となる\(n \in \N\)が存在する．このとき，\(s < (n + 1)x\)となる．これは，\(s\)が上限であることから矛盾する．
+\end{proof}
+[]
+\begin{MyTheorem}[区間収縮法][interval_shrinking_method]
+  区間列\(\paren{I_n}_{n\in\N}\)が\(I_n = [a_n, b_n]\)であって，\(I_{n+1} \subset I_n\)を満たすとする．このとき，\(\bigcap_{n \in \N}I_n\)は空でない．さらに，\(\lim_{n \to \infty}(b_n - a_n) = 0\)ならば，\(\bigcap_{n \in \N}I_n\)はちょうど一つの点を含む．
+\end{MyTheorem}
+\begin{proof}
+  \(\paren{a_n}_{n\in\N}\)は非減少で，\(\paren{b_n}_{n\in\N}\)は非増加である．\(a_n \le b_n\)だから，\(\paren{a_n}_{n\in\N}\)は上に有界で，\(\paren{b_n}_{n\in\N}\)は下に有界である．\cref{thm:monotone_sequence_convergence}より，\(\paren{a_n}_{n\in\N}\)は\(a\)，\(\paren{b_n}_{n\in\N}\)は\(b\)に収束する．\(a_n \le b_n\)だから，\(a \le b\)である．したがって，\(\bigcap_{n \in \N}I_n = [a, b]\)は空でない．さらに，\(\lim_{n \to \infty}(b_n - a_n) = 0\)ならば，\(a = b\)となるから，\(\bigcap_{n \in \N}I_n = \set{a}\)となる．
+\end{proof}
+
+\begin{MyTheorem}[ボルツァーノ・ワイヤストラス][bolzano_weierstrass_theorem]
+  \(\R\)上の有界な数列は収束する部分列を持つ．
+\end{MyTheorem}
+\begin{proof}
+  \(\R\)上の数列\(\paren{a_n}_{n\in\N}\)が有界だとする．有界だから，\(a_n \in [b, c]\ (n \in \N)\)なる\(b\), \(c\)をとれる．今，区間\([b, c]\)を二等分して，\([b, (b+c)/2]\)と\([(b+c)/2, c]\)のどちらかに無限に多くの項が入る（どちらも有限個なら，全体でも有限個になって矛盾する）．無限に多くの項が入るほうを改めて，\(b\), \(c\)をその区間の両端に置き換える．この操作を繰り返すと，区間列\(\paren{[b_n, c_n]}_{n\in\N}\)が得られる．\(\lim_{n \to \infty}(c_n - b_n) = 0\)であるから，\cref{thm:interval_shrinking_method}より，\(\bigcap_{n \in \N}[b_n, c_n]\)はちょうど一つの点を含む．この点を\(a\)とする．\(\paren{a_n}_{n\in\N}\)の部分列を次のように定める．\(n \in \N\)に対して，\(a_{k_n} \in [b_n, c_n]\)であって，\(k_n > k_{n-1}\)を満たすような\(k_n\)をとる．このとき，\(\lim_{n \to \infty}a_{k_n} = a\)となる（\cref{prop:squeeze_principle}）．
+\end{proof}
+
+\begin{MyTheorem}[コーシー列の収束性][cauchy_sequence_convergence]
+  実数上の数列\(\paren{a_n}_{n\in\N}\)が収束するための必要十分条件は，\(\paren{a_n}_{n\in\N}\)がコーシー列であることである．
+\end{MyTheorem}
+\begin{proof}
+  必要性：\(\paren{a_n}_{n\in\N}\)が\(a\)に収束したとする．\(\varepsilon > 0\)を任意に取る．ある\(N \in \N\)が存在して，\(n > N\)ならば\(|a_n - a| < \varepsilon/2\)となる．\(m, n > N\)をとる．三角不等式より，
+  \[ |a_m - a_n| \le |a_m - a| + |a - a_n| < \varepsilon/2 + \varepsilon/2 = \varepsilon. \]
+  よって，\(\paren{a_n}_{n\in\N}\)はコーシー列である．
+
+  十分性：\(\paren{a_n}_{n\in\N}\)がコーシー列であるとする．定義より，\(\varepsilon > 0\)に対して，ある\(N \in \N\)が存在して，
+  \[ m, n > N \implies |a_m - a_n| < \varepsilon. \tag{1}\]
+  (1)で，\(\varepsilon, m\)を固定すれば，
+  \[ \min\set{\min\set{a_l: l\le N}, \varepsilon - a_m} \le a_n \le \max\set{\max\set{a_l: l\le N}, \varepsilon + a_m} \]
+  だから，\(\paren{a_n}_{n\in\N}\)は有界である．\cref{thm:bolzano_weierstrass_theorem}より，\(\paren{a_n}_{n\in\N}\)は収束する部分列を持つ．このうち一つの収束先を\(a\)とする．(1)で，\(m\)をこの部分列の添え字に対応させて，極限をとると，
+  \[ n > N \implies |a_n - a| \le \varepsilon. \]
+  \(\varepsilon\)は任意であるから，\(\paren{a_n}\)は\(a\)に収束する．
+\end{proof}
+
+ここまでは\(\R\)上の数列について述べてきたがここからは\(\R^n\)上の数列について述べていく．
+
+\begin{MyTheorem}
+  \(\R^n\)上の数列\(\paren{a_m}_{m\in\N}\)は\(a_m = (a_{m1}, \dots, a_{mn})\)のように書け，\(b \in \R^n\)は\(b = (b_1, \dots, b_n)\)のように書けたとする．この時，次がそれぞれ成り立つ：
+  \begin{enumerate}
+    \item \(\paren{a_m}_{m\in\N}\)が\(b\)に収束するための必要十分条件は，各\(1 \le i \le n\)に対して，\(\R\)上の数列\(\paren{a_{mi}}_{m\in\N}\)が\(b_i\)に収束すること．
+    \item \(\paren{a_m}_{m\in\N}\)がコーシー列であるための必要十分条件は，各\(1 \le i \le n\)に対して，\(\paren{a_{mi}}_{m\in\N}\)がコーシー列であること．
+    \item \(\paren{a_m}_{m\in\N}\)が収束するための必要十分条件は，\(\paren{a_m}_{m\in\N}\)がコーシー列であること．
+    \item \(\paren{a_m}_{m\in\N}\)が\(b\)に収束するなら，その部分列も\(b\)に収束する．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)：
+  \[ |a_{mj} - b_j| \le |a_m - b| = \sqrt{\sum_{i=1}^n (a_{mi} - b_i)^2} \le \sum_{i=1}^n|a_{mi} - b_i| \quad (1 \le j \le n) \]
+  である．左の不等式によって必要性が言え，右の不等式から十分性が言える．
+
+  (ii)：(i)と同様．
+
+  (iii)：(i), (ii)より，
+  \[ \paren{a_m}_{m\in\N}がコーシー列 \iff \paren{a_{mi}}_{m\in\N}がコーシー列 \iff \paren{a_{mi}}_{m\in\N}が収束する \iff \paren{a_m}_{m\in\N}が収束する. \]
+  (iv)：(i)より明らか．
+\end{proof}
+
+\begin{MyTheorem}[][bolzano_weierstrass_theorem_Rn]
+  \(\R^n\)上の有界な数列は収束する部分列を持つ．
+\end{MyTheorem}
+\begin{proof}
+  帰納法で示す．\(n = 1\)のときは\cref{thm:bolzano_weierstrass_theorem}である．点列\(\paren{a_m}_{m\in\N}\)が\(\R^n\)上の有界な数列だとする．この数列の第一成分だけに注目すると，\cref{thm:bolzano_weierstrass_theorem}より，第一成分が収束する部分列\(\paren{a_{m_k}}_{k\in\N}\)が存在する．この部分列の第一成分以外に帰納法の仮定を適用すれば，すべての成分で収束するような部分列\(\paren{a_{m_{k_l}}}_{l\in\N}\)が存在する．この部分列は\(\R^n\)上で収束する．
+\end{proof}
+
+\subsection{級数}
+\label{sec:series}
+
+ここでは，複素数列の級数について述べる．複素数は，代数的な構造が違うだけで収束性については\(\R^2\)上の数列と同様に扱うことができる．関数項の級数については，\cref{sec:function_family}で述べる．
+
+\(\C\)上の数列\(\paren{a_n}_{n\in\N}\)に対して，数列\(\paren{s_n}_{n\in\N}\)を\(s_n = \sum_{k=0}^n a_k\)と定める．このとき，\(\paren{s_n}_{n\in\N}\)を\(\paren{a_n}_{n\in\N}\)の\textbf{部分和列}と呼ぶ．もし，\(\lim_{n\to\infty}s_n\in\C\)が存在するならば，\(\sum_{n=0}^\infty a_n\)が\textbf{収束}するといい，このとき\(\sum_{n=0}^\infty a_n = \lim_{n\to\infty}s_n\)と定義する．逆に，\(\paren{s_n}_{n\in\N}\)が存在しないならば，\(\sum_{n=0}^\infty a_n\)は\textbf{発散}するという．簡略化のため，\(\sum a_n = \sum_{n=0}^\infty a_n\)などと書くこともある．
+
+\begin{MyTheorem}[級数のコーシー条件][cauchy_condition_series]
+  級数\(\sum_{n=0}^\infty a_n\)が収束するための必要十分条件は，任意の\(\varepsilon > 0\)に対して，ある\(N \in \N\)が存在して，\(n > m > N\)ならば\(|a_{m+1} + a_{m+2} + \dots + a_n| < \varepsilon\)が成り立つことである．
+\end{MyTheorem}
+\begin{proof}
+  いずれも，\(\paren{s_n}_{n\in\N}\)がコーシー列であることと同値である．
+\end{proof}
+
+\begin{MyCorollary}[][necessary_condition_convergence_series]
+  級数\(\sum a_n\)が収束するならば，\(\lim_{n\to\infty}a_n = 0\)が成り立つ．特に，
+  \[ \lim_{n\to\infty}|a_n| が存在しないか\ne 0\implies \sum a_n は発散する \]
+  が成り立つ．
+\end{MyCorollary}
+\begin{proof}
+  前半：
+  \[|a_n| = |s_n - s_{n-1}| \to 0 \quad (n \to \infty).\]
+
+  後半：対偶をとると，
+  \[ \lim_{n\to\infty}a_n が存在しないか\ne 0\implies \sum a_n は発散する \]
+  となる．今，左の条件は絶対値をとったものと同値であるから，主張が成り立つ．
+\end{proof}
+
+\(\lim_{n\to\infty}|a_n| が存在しないか\ne 0\)と書くと長いので，単に\(\lim_{n\to\infty}|a_n| \ne 0\)と書くことにする．
+
+\begin{MyProposition}[][grouping_series]
+  級数\(\sum a_n\)が収束するなら，
+  \[ (a_0 + a_1 + \dots) + (a_{n+1} + a_{n+2} + \dots) + \dots \]
+  といったように，項をグループ化した級数も収束し，\(\sum a_n\)と同じ値に収束する．
+\end{MyProposition}
+\begin{proof}
+  グループ化した級数は，\(0 = n_0 < n_1 < n_2 < \dots\)を満たす数列\(\paren{n_k}_{k\in\N}\)に対して，\(\sum_{k=0}^\infty (a_{n_k} + a_{n_k + 1} + \dots + a_{n_{k+1}-1})\)のように書ける．コーシー条件を考えれば，収束は明らかで，\(\sum_{k=0}^N (a_{n_k} + a_{n_k + 1} + \dots + a_{n_{k+1}-1})\)は\(s_n\)の部分列だから，グループ化した級数は\(\sum a_n\)と同じ値に収束する（\cref{prop:limit_subsequence}）．
+\end{proof}
+
+\begin{MyTheorem}[絶対収束][absolute_convergence_series]
+  級数\(\sum a_n\)について，\(\sum |a_n|\)が収束するならば，\(\sum a_n\)も収束する．
+\end{MyTheorem}
+\begin{proof}
+  \[ |a_{m+1} + a_{m+2} + \dots + a_n| \le |a_{m+1}| + |a_{m+2}| + \dots + |a_n| \]
+  より，\(\sum |a_n|\)がコーシーの条件を満たすならば，\(\sum a_n\)もコーシーの条件を満たす．
+\end{proof}
+
+\(\sum |a_n|\)が収束するとき，\(\sum a_n\)は\textbf{絶対収束}するという．絶対収束しないが，収束する級数は\textbf{条件収束}するという．各項が非負実数の級数を\textbf{正項級数}という．
+
+ここからは，級数の様々な収束・発散判定法について述べていく．級数\(\sum a_n\)の収束・発散は，ある\(n_0 \in \N\)に対して，\(n > n_0\)の挙動にのみ依存する．そこで，ある\(n_0 \in \N\)に対して，\(n > n_0\)をみたすような\(n\)を考えたいときに，「十分大きい\(n\)に対して～」のように表現することにする．（「十分大きい」とは，\(+\infty\)に「十分近い」ということである．ある点\(x\)の近傍\(U\)に属する点\(y\)を「\(x\)に十分近い\(y\)」と表現するのと同様であり，近傍が定義できる空間全体で共通して適用できる概念である．）
+
+\begin{MyTheorem}[正項級数の収束性][convergence_positive_term_series]
+  正項級数\(\sum a_n\)は，\(\sum a_n\)が収束するための必要十分条件は，部分和列\(\paren{s_n}\)が有界であることである．
+\end{MyTheorem}
+\begin{proof}
+  \(s_n\)は非減少数列である．\(s_n\)が有界ならば，\cref{thm:monotone_sequence_convergence}より，\(\paren{s_n}_{n\in\N}\)は収束する．逆に，\(\sum a_n\)が収束するならば，\(s_n\)は収束する数列だから，有界である．
+\end{proof}
+
+\begin{MyTheorem}[comparison test][comparison_test_series]
+  \(\sum a_n, \sum b_n, \sum c_n\)を正項級数とし，\(\sum b_n\)が収束し，\(\sum c_n\)が発散するとする．このとき，次がそれぞれ成り立つ：
+  \begin{enumerate}
+    \item 十分大きい\(n\)に対して，\(a_n \le b_n\)ならば，\(\sum a_n\)も収束する．
+    \item 十分大きい\(n\)に対して，\(a_n \ge c_n\)ならば，\(\sum a_n\)も発散する．
+    \item 十分大きい\(n\)に対して，\(a_{n+1}/a_n \le b_{n+1}/b_n\)ならば，\(\sum a_n\)も収束する．
+    \item 十分大きい\(n\)に対して，\(a_{n+1}/a_n \ge c_{n+1}/c_n\)ならば，\(\sum a_n\)も発散する．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)：\(\paren{a_n}\)の部分和列を\(\paren{s_n}\)とする．ある\(N \in \N\)が存在して，\(n > N\)に対して，
+  \[ s_n - s_N \le b_0 + b_1 + \dots + b_n - (b_0 + b_1 + \dots + b_N) \]
+  が成り立つ．\(s_N\)と\(b_0 + b_1 + \dots + b_N\)は定数だから，\(\paren{s_n}_{n\in\N}\)は有界である．\cref{thm:convergence_positive_term_series}より，\(\sum a_n\)は収束する．
+
+  (ii)：\(\paren{s_n}\)を\(\paren{a_n}\)の部分和列とする．ある\(N \in \N\)が存在して，\(n > N\)に対して，
+  \[ s_n - s_N \ge c_0 + c_1 + \dots + c_n - (c_0 + c_1 + \dots + c_N) \]
+  が成り立つ．\(s_N\)と\(c_0 + c_1 + \dots + c_N\)は定数だから，\(\paren{s_n}_{n\in\N}\)は有界でない．\cref{thm:convergence_positive_term_series}より，\(\sum a_n\)は発散する．
+
+  (iii)：ある\(N \in \N\)がとれて，\(n \ge N\)に対して，
+  \[ \frac{a_{n+1}}{a_n} \le \frac{b_{n+1}}{b_n} \]
+  が成り立つ．\(n = N, \dots, m-1\)まで掛け合わせることで，\(m > N\)について，
+  \[ \frac{a_m}{a_N} \le \frac{b_m}{b_N} \]
+  つまり，\(a_m \le a_Nb_m/b_N\)を得る．いま，\(a_N/b_N\)が定数だから，\(\paren{a_Nb_m/b_N}\)は収束し，(i)より\(\paren{a_n}\)は収束する．
+
+  (iv)：ある\(N \in \N\)がとれて，\(n \ge N\)に対して，
+  \[ \frac{a_{n+1}}{a_n} \ge \frac{c_{n+1}}{c_n} \]
+  が成り立つ．\(n = N, \dots, m-1\)まで掛け合わせることで，\(m > N\)について，
+  \[ \frac{a_m}{a_N} \ge \frac{c_m}{c_N} \]
+  つまり，\(a_m \ge a_Nc_m/c_N\)を得る．いま，\(a_N/c_N\)が定数だから，\(\paren{a_Nc_m/c_N}\)は発散し，(ii)より\(\paren{a_n}\)は発散する．
+\end{proof}
+
+以下で述べる収束判定法は，基本的には，収束・発散するような具体的な級数とcomparison testを用いて証明される．comparison testは，級数の収束性を判定するための基本的な道具と言える．
+
+\begin{MyCorollary}[][asymptotic_comparison_test_series]
+  正項級数\(\sum a_n\)と\(\sum b_n\)とし，\(n\to\infty\)で\(a_n \in O(b_n)\)が成り立つとする．このとき，\(\sum b_n\)が収束するならば，\(\sum a_n\)も収束する．特に，\(n\to\infty\)で\(a_n \in \Theta(b_n)\)が成り立つならば，\(\sum a_n\)が収束することと\(\sum b_n\)が収束することは同値である．
+\end{MyCorollary}
+\begin{proof}
+  \(a_n \in O(b_n)\)とは，ある\(K > 0\)がとれて，十分大きい\(n\)に対して，\(a_n \le Kb_n\)が成り立つことである．\(K > 0\)が定数だから，\cref{thm:comparison_test_series}より，\(\sum b_n\)が収束するならば，\(\sum a_n\)も収束する．
+
+  \(n\to\infty\)で\(a_n \in \Theta(b_n)\)が成り立つなら，\(a_n \in O(b_n)\)も\(b_n \in O(a_n)\)も成り立つから，\(\sum a_n\)が収束することと\(\sum b_n\)が収束することは同値である．
+\end{proof}
+
+\begin{MyTheorem}[ratio test][ratio_test_series]
+  （正項級数とは限らない）級数\(\sum a_n\)について，次がそれぞれ成り立つ：
+  \begin{enumerate}
+    \item \(\varlimsup_{n\to\infty}\abs{a_{n+1}/a_n} < 1\)ならば，\(\sum a_n\)は収束する．
+    \item \(\varliminf_{n\to\infty}\abs{a_{n+1}/a_n} > 1\)ならば，\(\sum a_n\)は発散する．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)：絶対収束することを示せば良い．仮定より，ある\(0 \le r < 1\)がとれて，この\(r\)に対して，ある\(N \in \N\)がとれて，\(n \ge N\)に対して\(\abs{a_{n+1}/a_n} < r\)が成り立つ．このとき，\(n > N\)に対して\(\abs{a_n} < \abs{a_N}r^{-N}r^n\)が成り立つ．\(\sum \abs{a_N}r^{-N}r^n\)は収束するから，\(\sum a_n\)は絶対収束する（\cref{thm:comparison_test_series}）．
+
+  (ii)：\cref{cor:necessary_condition_convergence_series}より，\(\lim_{n\to\infty}|a_n| \ne 0\)を示せばよい．仮定より，ある\(r > 1\)が取れて，この\(r\)に対して，ある\(N \in \N\)がとれて，\(n \ge N\)に対して\(\abs{a_{n+1}/a_n} > r\)が成り立つ．このとき，\(n > N\)に対して\(\abs{a_n} > \abs{a_N}r^{-N}r^n\)が成り立つ．\(\lim_{n\to\infty}\abs{a_N}r^{-N}r^n = \infty\)だから，\(\lim_{n\to\infty}|a_n| \ne 0\)となる．
+\end{proof}
+
+\begin{MyTheorem}[root test][root_test_series]
+  （正項級数とは限らない）級数\(\sum a_n\)について，次がそれぞれ成り立つ：
+  \begin{enumerate}
+    \item \(\varlimsup_{n\to\infty}\sqrt[n]{|a_n|} < 1\)ならば，\(\sum a_n\)は収束する．
+    \item \(\varlimsup_{n\to\infty}\sqrt[n]{|a_n|} > 1\)ならば，\(\sum a_n\)は発散する．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)：絶対収束することを示せば良い．仮定より，ある\(0 \le r < 1\)がとれて，この\(r\)に対して，ある\(N \in \N\)がとれて，\(n > N\)に対して\(\sqrt[n]{|a_n|} < r\)が成り立つ．このとき，\(n > N\)に対して\(|a_n| < r^n\)が成り立つ．\(\sum r^n\)は収束するから，\(\sum a_n\)は絶対収束する（\cref{thm:comparison_test_series}）．
+
+  (ii)：\cref{cor:necessary_condition_convergence_series}より，\(\lim_{n\to\infty}|a_n| \ne 0\)を示せばよい．仮定より，ある\(r > 1\)が取れて，\(\sqrt[n]{|a_n|} > r\)をみたすような\(n\)が無数に存在する．このとき，\(\lim_{n\to\infty}|a_n| \ne 0\)となる．
+\end{proof}
+
+ratio testで判定できるなら，root testでも判定できる．なぜなら，
+
+\[ \varliminf_{n\to\infty}\abs{\frac{a_{n+1}}{a_n}} \le \varliminf_{n\to\infty}\sqrt[n]{|a_n|} \le \varlimsup_{n\to\infty}\sqrt[n]{|a_n|} \le \varlimsup_{n\to\infty}\abs{\frac{a_{n+1}}{a_n}} \]
+
+が成り立つからである．この不等式を証明しておこう．真ん中の不等式は明らかだから，左右の不等式を示す．
+
+（右の不等式）：\(\varlimsup_{n\to\infty}\abs{a_{n
+      +1}/a_n} = r\)とおく．\(r = +\infty\)のときは，明らかなので，\(r < +\infty\)とする．任意に\(\varepsilon > 0\)をとる．十分大きい\(n\)に対して，
+\[ \abs{\frac{a_{n+1}}{a_n}} < r + \varepsilon \]
+が成り立つ．このとき，\(M\)が取れて，任意の\(n\)について\(|a_n| < M(r+\varepsilon)^n\)が成り立ち，とくに
+\[ \varlimsup_{n\to\infty}\sqrt[n]{|a_n|} < r + \varepsilon. \]
+\(\varepsilon\)は任意だったから，\(\varlimsup_{n\to\infty}\sqrt[n]{|a_n} \le r = \varlimsup_{n\to\infty}\abs{a_{n
+      +1}/a_n}\)が言える．
+
+（左の不等式）：\(\varliminf_{n\to\infty}\abs{a_{n
+      +1}/a_n} = r\)とおく．任意に\(\varepsilon > 0\)をとる．十分大きい\(n\)に対して，
+\[ r - \varepsilon < \abs{\frac{a_{n+1}}{a_n}} \]
+が成り立つ．このとき，\(M\)がとれて，任意の\(n\)について\(|a_n| > M(r - \varepsilon)^n\)が成り立ち，とくに，
+\[ \varliminf_{n\to\infty}\sqrt[n]{|a_n|} > r - \varepsilon. \]
+\(\varepsilon\)は任意だったから，\(\varliminf_{n\to\infty}\sqrt[n]{|a_n} \ge r = \varliminf_{n\to\infty}\abs{a_{n
+      +1}/a_n}\)が言える．
+
+\begin{MyTheorem}[integral test][integral_test_series]
+  \(n_0\)を整数とする．\(f: [n_0, +\infty) \to [0, +\infty)\)を単調減少な関数とする．このとき，\(\sum_{n=n_0}^{\infty} f(n)\)が収束することと，広義積分\(\int_{n_0}^{+\infty} f(x)dx\)が収束することは同値である．
+\end{MyTheorem}
+\begin{proof}
+  \(n_0 = 0\)について証明すれば十分である．\(n_0\)が任意のときは，\(g: [0, +\infty) \to [0, +\infty)\)を\(g(x) = f(x + n_0)\)と定めれば，定義域が違うだけで，級数と積分の値は同じになる．さて，\(f\)が非負値関数だから，\(F(x) = \int_0^x f(t)dt\)と定めれば，\(F\)は非減少である．いま，任意の\(n \in \N\)に対して，
+  \[ f(n+1) \le F(n+1) - F(n) = \int_{n}^{n+1}f(t)dt \le f(n) \]
+  が成り立つから，\cref{thm:comparison_test_series}より，\(\sum f(n)\)と，正項級数\(\sum F(n + 1) - F(n)\)が収束することは同値である．また，
+  \[ \sum_{k=0}^n F(k + 1) - F(k) = F(n + 1) - F(0) = F(n + 1) = \int_0^{n + 1} f(t)dt \]
+  だから，\(\sum F(n + 1) - F(n)\)と，広義積分\(\int_0^{+\infty} f(x)dx\)が収束することは同値である．
+\end{proof}
+
+\begin{MyLemma}[ゼータ関数の収束性][convergence_zeta_function]
+  \(r\)を実数とする．級数\(\sum_{n=1}^\infty 1/n^r\)は，\(r > 1\)ならば収束し，\(r \le 1\)ならば発散する．
+\end{MyLemma}
+\begin{proof}
+  \(r \le 0\)のときは，\(1/n^r\)は\(n\to\infty\)で\(0\)に収束しないから発散する（\cref{cor:necessary_condition_convergence_series}）．\(r > 0\)のときは，\([1, +\infty) \ni x \mapsto 1/x^r\)は単調減少な関数で，
+  \[
+    \int_1^{+\infty} \frac{1}{x^r}dx = \begin{cases}
+      \frac{1}{r - 1} & (r > 1)   \\
+      +\infty         & (r \le 1)
+    \end{cases}
+  \]
+  だから，\cref{thm:integral_test_series}より，\(\sum_{n=1}^\infty 1/n^r\)は\(r > 1\)ならば収束し，\(r \le 1\)ならば発散する．
+\end{proof}
+
+\begin{MyLemma}[][1th_order_approximation]
+  \(A \subset \overline{\R}\)，\(a \in A^d\)とする．実数値関数\(f\)は点\(0\)の近くで定義され，点\(0\)で微分可能である．また，\(g, h: A \to \R\)は次をみたすとする：
+  \begin{itemize}
+    \item \(\lim_{x\to a}g(x) = 0\).
+    \item \(h(x) \in o(g(x))\ (x \to a)\). つまり，任意の\(\varepsilon > 0\)に対して，ある\(\delta > 0\)が存在して，\(0 < |x - a| < \delta\)ならば\(|h(x)| \le \varepsilon |g(x)|\)が成り立つ．
+    \item \(a\)に十分近い\(x \ne a\)に対して，\(g(x) + h(x) \ne 0\)が成り立つ．
+  \end{itemize}
+  このとき，
+  \[ f(g(x) + h(x)) = f(0) + f'(0)g(x) + s(x) \]
+  のように，\(s(x)\)を定義すれば，\(s(x) \in o(g(x))\ (x \to a)\)が成り立つ．
+\end{MyLemma}
+\begin{proof}
+  \(h(x) \in o(g(x))\)より，\(x\to a\)で\(h(x) \to 0\). よって，\(g(x) + h(x) \to 0 \ (x \to a)\). \(f\)は点\(0\)で微分可能だから，
+  \[ \lim_{x \to a} \frac{f(g(x) + h(x)) - f(0)}{g(x) + h(x)} = f'(0). \]
+  \(t(x) = (f(g(x) + h(x)) - f(0))/(g(x) + h(x)) - f'(0)\)と定めれば，\(\lim_{x \to a} t(x) = 0\)である．
+  ここで，
+  \begin{align*}
+    s(x) & = f(g(x) + h(x)) - f(0) - f'(0)g(x) \\
+         & = t(x)(g(x) + h(x)) + f'(0)h(x)
+  \end{align*}
+  と書ける．任意の\(\varepsilon > 0\)に対して，\(a\)に十分近い\(x \ne a\)に対して，\(|t(x)| \le \varepsilon\)かつ\(|h(x)| \le \varepsilon |g(x)|\)が成り立つから，
+  \[ |s(x)| \le |t(x)||g(x) + h(x)| + |f'(0)||h(x)| \le \varepsilon(1 + \varepsilon + |f'(0)|)|g(x)|. \]
+  \(\varepsilon(1 + \varepsilon + |f'(0)|)\)は任意に小さくできるから，\(s(x) \in o(g(x))\ (x \to a)\)が成り立つ．
+\end{proof}
+
+\begin{MyTheorem}[Raabe's test][raabe_test_series]
+  正項級数\(\sum a_n\)について，十分大きい\(n\)について，
+  \[ \frac{a_n}{a_{n+1}} = 1 + \frac{c_n}{n} \]
+  と表せたとする．このとき，次がそれぞれ成り立つ：
+  \begin{enumerate}
+    \item \(\varlimsup_{n\to\infty}c_n < 1\)ならば，\(\sum a_n\)は発散する．
+    \item \(\varliminf_{n\to\infty}c_n > 1\)ならば，\(\sum a_n\)は収束する．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)：ある\(r < 1\)が存在して，この\(r\)に対して，十分大きい\(n\)に対して，
+  \[ \frac{a_n}{a_{n+1}} < 1 + \frac{r}{n} \]
+  が成り立つ．\(r < s < 1\)をとり，数列\(\paren{b_n} = \paren{n^{-s}}\)を考える．
+  \[ \frac{b_n}{b_{n+1}} = \paren{1 + \frac1n}^s = 1 + \frac {s + \alpha_n}{n}, \]
+  ここで，\(\lim_{n\to\infty}\alpha_n = 0\)である（\cref{lem:1th_order_approximation}）．したがって，十分大きい\(n\)に対して，
+  \[ \frac{a_n}{a_{n+1}} < 1 + \frac rn < 1 + \frac{s + \alpha_n}n < \frac{b_n}{b_{n+1}} \]
+  が成り立つ．今，級数\(\sum b_n\)は発散する（\cref{lem:convergence_zeta_function}）から，\cref{thm:comparison_test_series}より，級数\(\sum a_n\)も発散する．
+
+  (ii)：ある\(r > 1\)が存在して，この\(r\)に対して，十分大きい\(n\)に対して，
+  \[ \frac{a_n}{a_{n+1}} > 1 + \frac{r}{n} \]
+  が成り立つ．\(1 < s < r\)をとり，数列\(\paren{b_n} = \paren{n^{-s}}\)を考える．
+  \[ \frac{b_n}{b_{n+1}} = \paren{1 + \frac1n}^s = 1 + \frac {s + \alpha_n}{n}, \]
+  ここで，\(\lim_{n\to\infty}\alpha_n = 0\)である（\cref{lem:1th_order_approximation}）．したがって，十分大きい\(n\)に対して，
+  \[ \frac{b_n}{b_{n+1}} = 1 + \frac{s + \alpha_n}{n} < 1 + \frac rn < \frac{a_n}{a_{n+1}} \]
+  が成り立つ．いま，級数\(\sum b_n\)は収束する（\cref{lem:convergence_zeta_function}）から，\cref{thm:comparison_test_series}より，級数\(\sum a_n\)も収束する．
+\end{proof}
+
+\begin{MyLemma}[][convergence_logarithmic_zeta_function]
+  \(r\)を実数とする．級数\(\sum_{n=3}^\infty 1/n(\log n)^r\)は，\(r > 1\)ならば収束し，\(r \le 1\)ならば発散する．
+\end{MyLemma}
+\begin{proof}
+  \cref{lem:convergence_zeta_function}の証明と同様で，次の結果より，明らかである：
+  \begin{align*}
+    \int_{3}^{+\infty} \frac1{x(\log x)^r}dx & = \int_{\log 3}^{+\infty} \frac1{t^r}dt \quad (\log x = t)                            \\
+                                             & = \begin{cases}
+                                                   \frac1{r - 1} \frac1{(\log 3)^{r-1}} & (r > 1)    \\
+                                                   +\infty                              & (r \le 1).
+                                                 \end{cases}
+  \end{align*}
+\end{proof}
+
+\begin{MyTheorem}[Bertrand's test][bertrand_test_series]
+  正項級数\(\sum a_n\)について，十分大きい\(n\)について，
+  \[ \frac{a_n}{a_{n+1}} = 1 + \frac{1}{n} + \frac{c_n}{n\log n} \]
+  と表せたとする．このとき，次がそれぞれ成り立つ：
+  \begin{enumerate}
+    \item \(\varlimsup_{n\to\infty}c_n < 1\)ならば，\(\sum a_n\)は発散する．
+    \item \(\varliminf_{n\to\infty}c_n > 1\)ならば，\(\sum a_n\)は収束する．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)：ある\(r < 1\)が存在して，この\(r\)に対して，十分大きい\(n\)に対して，
+  \[ \frac{a_n}{a_{n+1}} = 1 + \frac{1}{n} + \frac r{n\log n} \]
+  が成り立つ．\(r < s < 1\)をとり，数列\(\paren{b_n} = \paren{n^{-1}(\log n)^{-s}}\)を考える．
+  \begin{align*}
+    \frac{b_n}{b_{n+1}} & = \paren{1 + \frac 1n}\paren{\frac{\log(n+1)}{\log n}}^s         \\
+                        & = \paren{1 + \frac 1n}\paren{1 + \frac{\log(1 + 1/n)}{\log n}}^s \\
+                        & = \paren{1 + \frac 1n}\paren{1 + \frac{1 + \alpha_n}{n\log n}}^s \\
+                        & = \paren{1 + \frac 1n}\paren{1 + \frac{s + \beta_n}{n\log n}}    \\
+                        & = 1 + \frac1n + \frac{s + \gamma_n}{n\log n}
+  \end{align*}
+  ここで，\(\alpha_n\), \(\beta_n\)は\cref{lem:1th_order_approximation}より，それぞれ\(n\to\infty\)で\(0\)に収束するから，\(\gamma_n\)も\(n\to\infty\)で\(0\)に収束する．したがって，十分大きい\(n\)に対して，
+  \[ \frac{a_n}{a_{n+1}} = 1 + \frac{1}{n} + \frac r{n\log n} < 1 + \frac1n + \frac{s + \gamma_n}{n\log n} = \frac{b_n}{b_{n+1}} \]
+  が成り立つ．いま，級数\(\sum b_n\)は発散する（\cref{lem:convergence_logarithmic_zeta_function}）から，\cref{thm:comparison_test_series}より，級数\(\sum a_n\)も発散する．
+
+  (ii)：ある\(r > 1\)が存在して，この\(r\)に対して，十分大きい\(n\)に対して，
+  \[ \frac{a_n}{a_{n+1}} = 1 + \frac{1}{n} + \frac r{n\log n} \]
+  が成り立つ．\(1 < s < r\)をとり，数列\(\paren{b_n} = \paren{n^{-1}(\log n)^{-s}}\)を考える．(i)と同様の計算をすることで，
+  \begin{align*}
+    \frac{b_n}{b_{n+1}} & = 1 + \frac1n + \frac{s + \gamma_n}{n\log n}
+  \end{align*}
+  で，\(\gamma_n\)は\(n\to\infty\)で\(0\)に収束する．したがって，十分大きい\(n\)に対して，
+  \[ \frac{b_n}{b_{n+1}} = 1 + \frac{1}{n} + \frac{s + \gamma_n}{n\log n} < 1 + \frac{1}{n} + \frac r{n\log n} = \frac{a_n}{a_{n+1}} \]
+  が成り立つ．いま，級数\(\sum b_n\)は収束する（\cref{lem:convergence_logarithmic_zeta_function}）から，\cref{thm:comparison_test_series}より，級数\(\sum a_n\)も収束する．
+\end{proof}
+
+\begin{MyTheorem}[Gauss's test][gauss_test_series]
+  正項級数\(\sum a_n\)について，\(0\)に収束する数列\(\paren{\alpha_n}_{n\in\N}\)と\(\lambda > 1\)をとれて，十分大きい\(n\)について，
+  \[ \frac{a_n}{a_{n+1}} = 1 + \frac{r}{n} + \frac{\alpha_n}{n^\lambda} \]
+  と表せたとする．このとき，次がそれぞれ成り立つ：
+  \begin{enumerate}
+    \item \(r > 1\)ならば，\(\sum a_n\)は収束する．
+    \item \(r \le 1\)ならば，\(\sum a_n\)は発散する．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  \cref{thm:raabe_test_series}と\cref{thm:bertrand_test_series}を組み合わせて得られる．
+\end{proof}
+
+ratio test, root testは条件収束性まで判定できるが，Raabe's test, Bertrand's test, Gauss's testは絶対収束性しか判定できない．
+
+\begin{MyProposition}[コーシーの積級数][cauchy_product_series]
+  級数\(\sum a_n\)と\(\sum b_n\)は絶対収束し，収束値をそれぞれ\(A\), \(B\)とする．このとき，級数\(\sum c_n\)を，\(c_n = \sum_{k=0}^n a_k b_{n-k}\)と定めれば，\(\sum c_n\)は絶対収束し，収束値は\(AB\)である．
+\end{MyProposition}
+\begin{proof}
+  \[ \sum_{n=0}^m |c_n| \le \sum_{n=0}^m\sum_{\substack{i+j=n,\\ i\ge0,\ j\ge0}}|a_i||b_j| \le \sum_{\substack{0 \le i \le n, \\ 0 \le j \le n}}|a_i||b_j| = \paren{\sum_{n=0}^m|a_n|}\paren{\sum_{n=0}^m|b_n|} \]
+  より，\(\sum c_n\)は絶対収束する．
+  \begin{align*}
+    \abs{\sum_{n=0}^m c_n - \paren{\sum_{n=0}^m a_n}\paren{\sum_{n=0}^m b_n}} & = \abs{\sum_{\substack{i + j > m,                                                                                                              \\ 0 \le i \le m, \\ 0 \le j \le m}} a_i b_j} \le \sum_{\substack{i + j > m, \\ 0 \le i \le m, \\ 0 \le j \le m}} |a_i||b_j| \\
+                                                                              & \le \sum_{\substack{m/2 < i \le m,                                                                                                             \\ 0 \le j \le m}} |a_i||b_j| + \sum_{\substack{0 \le i \le m, \\ m/2 < j \le m}} |a_i||b_j| \\
+                                                                              & = \paren{\sum_{m/2 < i \le m} |a_i|}\paren{\sum_{0 \le j \le m} |b_j|} + \paren{\sum_{0 \le i \le m} |a_i|}\paren{\sum_{m/2 < j \le m} |b_j|}.
+  \end{align*}
+  ここで，\(\sum |a_n|\)と\(\sum |b_n|\)は収束するから，\(\lim_{m\to\infty}\sum_{m/2 < i \le m} |a_i| = 0\)かつ\(\lim_{m\to\infty}\sum_{m/2 < j \le m} |b_j| = 0\)である（コーシー条件）．したがって，
+  \[ \abs{\sum_{n=0}^m c_n - \paren{\sum_{n=0}^m a_n}\paren{\sum_{n=0}^m b_n}} \to 0. \quad (m \to \infty) \]
+  \(\sum a_n\)と\(\sum b_n\)はそれぞれ\(A\)と\(B\)に収束するから，\(\sum c_n\)は\(AB\)に収束する．
+\end{proof}
+
+\begin{MyTheorem}[ライプニッツの定理][leibniz_theorem_alternating_series]
+  \(\paren{a_n}_{n\in\N}\)は非増加非負実数値数列で，\(\lim_{n \to \infty} a_n = 0\)とする．このとき，交代級数\(\sum_{n=0}^\infty (-1)^{n} a_n\)は収束する．
+\end{MyTheorem}
+\begin{proof}
+  級数\(\sum (-1)^n a_n\)の部分和列を\(\paren{s_n}\)とする．任意の\(n \in \N\)に対して，
+  \begin{align*}
+    s_{2n}   & = a_0 - (a_1 - a_2) - (a_3 - a_4) - \dots - (a_{2n-1} - a_{2n})                   \\
+    s_{2n+1} & = (a_0 - a_1) + (a_2 - a_3) + \dots + (a_{2n-2} - a_{2n-1}) + (a_{2n} - a_{2n+1})
+  \end{align*}
+  が成り立つから，\(\paren{s_{2n}}\)は非増加で，\(\paren{s_{2n+1}}\)は非減少である．また，任意の\(n \in \N\)に対して，
+  \[ s_{2n+1} = s_{2n} - a_{2n + 1} \le s_{2n} \]
+  が成り立つから，\(\paren{s_{2n}}\)は上に有界で，\(\paren{s_{2n+1}}\)は下に有界で，それぞれ\(\alpha\), \(\beta\)に収束する．
+  \[ |\alpha - \beta| \le |s_{2n} - s_{2n+1}| = a_{2n + 1} \to 0 \quad (n \to \infty) \]
+  だから，\(\alpha = \beta\)である．任意に\(\varepsilon > 0\)をとれば，ある\(N_1, N_2 \in \N\)がとれて，
+  \[ n > N_1 \implies |s_{2n} - \alpha| < \varepsilon, \quad n > N_2 \implies |s_{2n+1} - \beta| < \varepsilon. \]
+  が成り立つ．\(N = \max\{2N_1, 2N_2 + 1\}\)とすれば，
+  \[ n > N \implies |s_n - \alpha| < \varepsilon. \]
+  したがって，\(\paren{s_n}\)は\(\alpha\)に収束する．
+\end{proof}
+
+\begin{MyTheorem}[アーベルの定理][abel_theorem_series]
+  級数\(\sum a_n\)と実数列\(\paren{p_n}\)は次をみたすとする：
+  \begin{itemize}
+    \item 級数\(\sum a_n\)の部分和列\(\paren{s_n}\)は有界である．
+    \item \(p_0 \ge p_1 \ge p_2 \ge \dots \ge 0\).
+  \end{itemize}
+  加えて，次のいずれかをみたすとする：
+  \begin{enumerate}
+    \item \(\lim_{n\to\infty} p_n = 0\).
+    \item \(\sum a_n\)が収束する．
+  \end{enumerate}
+  このとき，\(\sum a_n p_n\)は収束する．
+\end{MyTheorem}
+\begin{proof}
+  任意の自然数\(n \le m\)に対して，
+  \begin{align*}
+    |a_np_n + \dots + a_mp_m| & = |(s_{n} - s_{n-1})p_n + (s_{n+1} - s_n)p_{n+1} + \dots + (s_m - s_{m-1})p_m|        \\
+                              & = |-s_{n-1}p_n + s_n(p_n - p_{n+1}) + \dots + s_{m-1}(p_{m-1} - p_m) + s_mp_m|        \\
+                              & \le |s_{n-1}|p_n + |s_n|(p_n - p_{n+1}) + \dots + |s_{m-1}|(p_{m-1} - p_m) + |s_m|p_m
+  \end{align*}
+  ただし，\(s_{-1} = 0\)とする．ここで，\(\paren{s_n}\)は有界だから，ある\(M > 0\)が存在して，任意の\(n \in \N\)に対して\(|s_n| < M\)が成り立つ．したがって，
+  \[ |a_np_n + \dots + a_mp_m| \le M(p_n + (p_n - p_{n+1}) + \dots + (p_{m-1} - p_m) + p_m) = 2Mp_n. \]
+  (i)をみたすときは，\(\sum a_n p_n\)はコーシー列であり，収束する（\cref{thm:cauchy_condition_series}）．
+
+  最初の式変形では，\(s_n\)のように\(0\)番目からの和ではなく，\(N\)番目からの和を考えて，その差分を考えるということもできる．つまり，\(s^N_n = \sum_{k=N}^n a_k\)と定めれば，\(N < n \le m\)なる任意の自然数\(n\), \(m\)に対して，
+  \[ |a_np_n + \dots + a_mp_m| \le |s^N_{n-1}|p_n + |s^N_n|(p_n - p_{n+1}) + \dots + |s^N_{m-1}|(p_{m-1} - p_m) + |s^N_m|p_m \]
+  が成り立つ．ここで，\(\sum a_n\)が収束するなら，\(\lim_{n\to\infty} s^N_n = 0\)である．したがって，任意に\(\varepsilon > 0\)をとれば，ある\(N_0 \in \N\)が存在して，\(n > N_0\)ならば\(|s^N_n| < \varepsilon\)が成り立つ．この\(\varepsilon\), \(N_0\)に対して，\(N_0 < N\)なる\(N\)をとれば，\(N < n \le m\)なる任意の自然数\(n\), \(m\)に対して，
+  \[ |a_np_n + \dots + a_mp_m| \le 2\varepsilon p_0 \]
+  が成り立つ．\(2p_0\)は定数だから，\(\sum a_n p_n\)はコーシー列であり，収束する（\cref{thm:cauchy_condition_series}）．
+\end{proof}
+
+関数項の級数についても同様の定理が成り立つ（cf. \cref{thm:abel_theorem_function_sequence}）．
+
+
+\subsection{関数列・関数族}
+\label{sec:function_family}
+
+ここからは，関数族（関数列）について述べる．
+\begin{MyDefinition}
+  \(A\)は\(\R^n\)の部分集合で，\(T\)を\(\overline \R\)か\(\R^m\)の部分集合とし，\(s \in T^d\)とする．\(A\)上で定義され，\(\R^l\)の値をとる関数族\(\paren{f_t}_{t\in T}\)を考える．この\(A, T, s, \paren{f_t}\)を\textbf{関数族セットアップ}と呼ぶ.
+\end{MyDefinition}
+関数列\(\paren{f_n}_{n\in\N}\)は，関数族\(\paren{f_t}_{t\in T}\)の特別な場合である．
+
+\begin{MyDefinition}[各点収束][pointwise_convergence]
+  \(A, T, s, \paren{f_t}\)を関数族セットアップとする．\(\paren{f_t}_{t\in T}\)が\(t \to s\)で\(f\)に\textbf{各点収束}するとは，任意の\(x \in A\)に対して，\(\lim_{t \to s}f_t(x) = f(x)\)が成り立つことをいう．
+\end{MyDefinition}
+
+\begin{MyDefinition}[一様収束][uniform_convergence]
+  \(A, T, s, \paren{f_t}\)を関数族セットアップとする．\(\paren{f_t}_{t\in T}\)が\(t \to s\)で\(f\)に\textbf{一様収束}するとは，任意の\(\varepsilon > 0\)に対して，ある\(\delta > 0\)が存在して，任意の\(t \in T \cap U'(s, \delta)\)と任意の\(x \in A\)に対して，\(|f_t(x) - f(x)| < \varepsilon\)が成り立つことをいう．
+\end{MyDefinition}
+
+一様ノルムを導入すれば，\(\paren{f_t}_{t\in T}\)が\(t \to s\)で\(f\)に一様収束することは，\(\norm{f_t - f} \to 0 \ (t \to s)\)と同値である．一様ノルムの説明については，省略する．
+
+\(A\)の部分集合\(B\)について，定義域を制限した関数族\(\paren{f_t|_B}_{t\in T}\)を考えることができる．\(\paren{f_t|_B}_{t\in T}\)が\(t \to s\)で\(f\)に各点（一様）収束することを，
+\(\bm{\paren{f_t}_{t\in T}}\)は\(\bm{t \to s}\)で\(f\)に\textbf{\(\bm{B}\)上各点（一様）収束する}と言う．\(\paren{f_t}_{t\in T}\)が\(A\)に含まれる任意のコンパクト集合上で\(t \to s\)で\(f\)に一様収束することを，\(\paren{f_t}_{t\in T}\)が\(t \to s\)で\(f\)に\textbf{広義一様収束}すると言う．
+
+\begin{MyProposition}[一様収束\(\implies\)各点収束][uniform_convergence_pointwise_convergence]
+  \(A, T, s, \paren{f_t}\)を関数族セットアップとする．\(\paren{f_t}_{t\in T}\)が\(t \to s\)で\(f\)に一様収束するならば，\(\paren{f_t}_{t\in T}\)は\(t \to s\)で\(f\)に各点収束する．
+\end{MyProposition}
+\begin{proof}
+  各\(x \in A\)に対して，
+  \[ |f_t(x) - f(x)| \le \norm{f_t - f} \to 0 \quad (t \to s). \]
+\end{proof}
+
+\begin{MyProposition}[一様収束性は連続性を保つ][uniform_convergence_continuity]
+  \(A, T, s, \paren{f_t}\)を関数族セットアップとする．関数族\(\paren{f_t}_{t\in T}\)が\(t \to s\)で\(f\)に一様収束し，かつ各\(f_t\)が点\(a\)で連続であるならば，\(f\)も点\(a\)で連続である．
+\end{MyProposition}
+\begin{proof}
+  \(\varepsilon > 0\)を任意に取る．一様収束性より，ある\(\delta > 0\)が存在して，\(t \in T \cap U'(s, \delta)\)をとれば，任意の\(x \in A\)に対して，
+  \[|f_t(x) - f(x)| < \varepsilon/3.\]
+  \(f_t\)は点\(a\)で連続だから，ある\(\delta' > 0\)が存在して，任意の\(x \in A\)に対して，
+  \[ x \in U(a, \delta') \implies |f_t(x) - f_t(a)| < \varepsilon/3. \]
+  \(x \in U(a, \delta') \cap A\)を任意にとる．三角不等式より，
+  \begin{align*}
+    |f(x) - f(a)| & \le |f(x) - f_t(x)| + |f_t(x) - f_t(a)| + |f_t(a) - f(a)|      \\
+                  & < \varepsilon/3 + \varepsilon/3 + \varepsilon/3 = \varepsilon.
+  \end{align*}
+\end{proof}
+
+\(A\)が閉集合か開集合で，「一様収束」を「広義一様収束」に置き換えても同様に連続性が保たれる．開集合であれば，\(A\)の各点\(x\)に対して，ある\(\varepsilon > 0\)が取れて，\(U(x, \varepsilon) \subset A\)とできる．\(U(x, \varepsilon/2)^a\)は\(A\)に含まれ，コンパクトである．よって，\(f\)は\(x\)で連続である．\(A\)が閉集合であれば，\(A\)の各点\(x\)に対して，ある\(\varepsilon > 0\)が取れて，\(U(x, \varepsilon)^a \cap A\)は\(A\)に含まれ，コンパクトである．よって，\(f\)は\(x\)で連続である．
+
+\begin{MyProposition}[項別積分][termwise_integration]
+  \(A, T, s, \paren{f_t}\)を関数族セットアップとする．\(A\)は有界体積確定で，各\(f_t\)は\(A\)上可積分で，\(\paren{f_t}_{t\in T}\)が\(t \to s\)で\(A\)上可積分関数\(f\)に一様収束するものとする．このとき，次が成り立つ：
+  \[ \int_A f = \lim_{t \to s}\int_A f_t. \]
+\end{MyProposition}
+\begin{proof}
+  \[ \abs{\int_A f - \int_Af_t}\le\int_A\abs{f-f_t}\le v(A)\norm{f-f_t} \to 0 \quad (t \to s). \]
+\end{proof}
+
+「体積確定」，\(v(A)\)については，\cref{sec:integration_Rn}を参照．
+
+\begin{MyProposition}[項別微分][termwise_differentiation]
+  \(A = I = [a, b], T, s, \paren{f_t}\)を関数族セットアップとする．各\(f_t\)が\(I\)上で\(C^1\)級で，\(\paren{f_t}_{t\in T}\)が\(t \to s\)で\(f\)に各点収束し，\(\paren{f_t'}_{t\in T}\)が\(t \to s\)で\(g\)に一様収束するならば，\(f\)は\(I\)上で\(C^1\)級で，\(f' = g\)が成り立つ．
+\end{MyProposition}
+\begin{proof}
+  \(f_t'\)は\(I\)上で連続だから，
+  \[ \int_a^x f'_t(t)dt = f_t(x) - f_t(a) \]
+  を得る．ここで，\(t \to s\)とすれば，\cref{prop:termwise_integration}より，
+  \[ \int_a^x g(t)dt = f(x) - f(a) \]
+  を得る．\(g\)は連続だから（\cref{prop:uniform_convergence_continuity}）左辺は微分可能で，\(f\)は微分可能である．よって，両辺を微分すれば，\(g(x) = f'(x)\)．
+\end{proof}
+
+\begin{MyTheorem}[一様コーシー条件][uniform_cauchy_condition]
+  \(A, T, s, \paren{f_t}\)を関数族セットアップとする．このとき，以下の二つの条件は同値である．
+  \begin{enumerate}
+    \item \(\paren{f_t}_{t\in T}\)は\(t \to s\)で\(f\)に一様収束する．
+    \item \(\paren{\forall \varepsilon > 0}\paren{\exists \delta > 0}\paren{\forall u, v \in T \cap U'(s, \delta)}\paren{\norm{f_u - f_v} < \varepsilon}.\)
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  (i)\(\implies\)(ii)： \(\varepsilon > 0\)を任意に取る．ある\(\delta > 0\)が存在して，
+  \[ u \in T \cap U'(s, \delta) \implies \norm{f_u - f} < \varepsilon/2. \]
+  \(u, v \in T \cap U'(s, \delta)\)をとる．三角不等式より，
+  \[ \norm{f_u - f_v} \le \norm{f_u - f} + \norm{f - f_v} < \varepsilon/2 + \varepsilon/2 = \varepsilon. \]
+
+  (ii)\(\impliedby\)(i)： \(x\)を固定して，添え字\(t\)を\(f_t(x)\)に対応させる関数（数列）はコーシー条件を満たすから収束する（\cref{thm:cauchy_condition_function}）．そのため，関数列\(\paren{f_t}_{t\in T}\)は各点収束する．各点収束先を\(f\)とする．\(\varepsilon > 0\)を任意に取る．仮定から，各点\(x \in A\)に対して，
+  \[ u, v \in T \cap U'(s, \delta) \implies |f_u(x) - f_v(x)| < \varepsilon. \]
+  ここで，\(v \to s\)をとれば，各点\(x \in A\)に対して，
+  \[ u \in T \cap U'(s, \delta) \implies |f_u(x) - f(x)| \le \varepsilon. \]
+  よって，
+  \[ u \in T \cap U'(s, \delta) \implies \norm{f_u - f} < \varepsilon. \]
+  したがって，\(\paren{f_t}_{t\in T}\)は\(t \to s\)で\(f\)に一様収束する．
+\end{proof}
+
+\begin{MyTheorem}[ディニの定理][dini_theorem]
+  コンパクト集合\(K\)上の連続関数族\(\paren{f_n}_{n\in\N}\)は次の条件をみたすとする：
+  \begin{enumerate}
+    \item 任意の\(x \in K\)に対して，数列\(\paren{f_n(x)}_{n\in\N}\)は非減少（増加）．
+    \item \(\paren{f_n}_{n\in\N}\)は\(K\)上連続な関数\(f\)に各点収束する．
+  \end{enumerate}
+  このとき，\(\paren{f_n}_{n\in\N}\)は\(f\)に\(K\)上一様収束する．
+\end{MyTheorem}
+\begin{proof}
+  \(\paren{f_n(x)}_{n\in\N}\)が非増加なら，\(-f_n\)を考えれば，非減少の時に帰着するので，非減少な場合のみ考える．\(\varepsilon > 0\)を任意に取る．各点収束するから，\(x \in K\)に対して，ある\(N_x \in \N\)が存在して，
+  \[ 0 \le f(x) - f_{N_x}(x) < \frac{\varepsilon}{3}. \]
+  また，\(f, f_{N_x}\)は連続だから，ある開近傍\(U_x\)が存在して，任意の\(y \in U_x\)に対して，
+  \[ |f(y) - f(x)|, |f_{N_x}(y) - f_{N_x}(x)| < \frac{\varepsilon}{3}. \]
+  今，\(x, y \in K\), \(y \in U_x\)なら，
+  \[ |f(y) - f_{N_x}(y)| \le |f(y) - f(x)| + |f(x) - f_{N_x}(x)| + |f_{N_x}(x) - f_{N_x}(y)| < \varepsilon. \]
+  ところで，\(\set{U_x: x \in K}\)は\(K\)の開被覆で，\(K\)はコンパクトだから，ある有限部分集合\(\set{U_{x_1}, \dots, U_{x_m}}\)が存在して，\(K\)の被覆となる．\(N = \max\set{N_{x_1}, \dots, N_{x_m}}\)とおく．\(n > N\)ならば任意の\(y \in K\)に対して，
+  \[ |f(y) - f_n(y)| < \varepsilon \]
+  が成り立つことを示す．\(y \in K\)をとる．ある\(1 \le i \le m\)が存在して，\(y \in U_{x_i}\)である．\(n > N \ge N_{x_i}\)だから，\(\paren{f_n(y)}_{n\in\N}\)は非減少であることから，
+  \[ 0 < f(y) - f_n(y) \le f(y) - f_{N_{x_i}}(y) < \varepsilon. \]
+\end{proof}
+
+関数列\(\paren{f_n}_{n\in\N}\)に対して，級数\(\sum_{k=0}^\infty f_k\)が\(f\)に一様収束するとは，\(\paren{\sum_{k=0}^n f_k}_{n\in\N}\)が\(f\)に一様収束することをいう．とくに，級数\(\sum_{k=0}^\infty f_k\)が定義できるようなとき，\(\sum_{k=0}^\infty f_k\)は\(\paren{\sum_{k=0}^n f_k}_{n\in\N}\)の一様収束先である．
+
+\begin{MyTheorem}[ワイヤストラスの定理（M-test）][m_test]
+  \(A, T = \N, s = +\infty, \paren{f_n}\)を関数族セットアップとする．このとき，定数関数列\(\paren{M_n}_{n\in\N}\)が存在して以下の二つの条件をみたすとき，\(\sum_{n=1}^\infty f_n\)は\(A\)上で一様収束する．
+  \begin{enumerate}
+    \item 任意の\(n \in \N\)に対して，\(|f_n(x)| \le M_n \ (\forall x \in A)\)．
+    \item \(\sum_{n=1}^\infty M_n\)は収束する．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  \(F_n(x) = \sum_{k=1}^n f_k(x), S_n = \sum_{k=1}^n M_k\)とおく．\(m > n\)をとる．三角不等式より，
+  \[ |F_m(x) - F_n(x)| = \abs{\sum_{k=n+1}^m f_k(x)} \le \sum_{k=n+1}^m |f_k(x)| \le \sum_{k=n+1}^m M_k = |S_m - S_n|. \]
+  \(\paren{S_n}_{n\in\N}\)は収束するからコーシー列である．したがって，\(\paren{F_n}\)は一様コーシー条件をみたすから一様収束する（\cref{thm:uniform_cauchy_condition}）．
+\end{proof}
+
+\(\sum a_n (x-a)^n\)の形をした級数を\textbf{冪級数}という．これは，\cref{sec:function_family}で述べられている関数列の級数の特別な場合である．
+定義域は，\cref{sec:series}と同様に\(\C\)の部分集合となる．冪級数の特徴として，\(R \in [0, +\infty]\)が存在して，\(|x-a| < R\)のときに絶対収束し，\(|x-a| > R\)のときに発散することが挙げられる．この\(R\)を\textbf{収束半径}と呼ぶ．収束半径の存在については，\cref{thm:root_test_series}などから明らかで，\(R^{-1} = \varlimsup_{n\to\infty} \sqrt[n]{|a_n|}\)などと書ける．\(\lim_{n\to\infty} |a_{n+1}/a_n|\)が存在すれば，これも\(R^{-1}\)に等しい．\(|x-a| = R\)のときは収束することもあれば発散することもある．
+
+冪級数は定義域を平行移動すれば，\(\sum a_n x^n\)の形に書けるから，以降では\(\sum a_n x^n\)の形の冪級数を考える．
+
+\begin{MyTheorem}[][power_series_uniform_convergence]
+  冪級数\(\sum a_n x^n\)の収束半径を\(R\)とする．このとき，\(\sum a_n x^n\)は\(\set{x : |x| < R}\)上で広義一様収束する．
+\end{MyTheorem}
+\begin{proof}
+  コンパクト集合\(K \subset \set{x : |x| < R}\)をとる．\(r = \max_{x \in K} |x|\)とおけば，任意の\(x \in K\)に対して，\(|a_n x^n| \le |a_n| r^n\)である．\(r < R\)から\(\sum |a_n| r^n\)は収束し，\cref{thm:m_test}より，\(\sum a_n x^n\)は\(K\)上で一様収束する．
+\end{proof}
+
+\begin{MyTheorem}[][abel_theorem_function_sequence]
+  \(A \subset \R^n\)上で定義された複素数値関数列\(\paren{a_n}\)と実数値関数列\(\paren{p_n}\)は次をみたすとする：
+  \begin{itemize}
+    \item 級数\(\sum a_n\)の部分和列\(\paren{s_n}\)は一様有界である．つまり，ある\(M > 0\)が存在して，任意の\(n \in \N\)に対して，\(\|s_n\| \le M\)が成り立つ．
+    \item 各\(x\in A\)に対して，\(\paren{p_n(x)}\)は非負非増加列である．
+  \end{itemize}
+  加えて，次のいずれかをみたすとする：
+  \begin{enumerate}
+    \item \(\paren{p_n}\)は\(n \to \infty\)で\(0\)に一様収束する．
+    \item \(\sum a_n\)は一様収束し，\(p_0\)は有界である．
+  \end{enumerate}
+  このとき，\(\sum a_n p_n\)は一様収束する．
+\end{MyTheorem}
+\begin{proof}
+  \cref{thm:abel_theorem_series}の証明と同様の計算をすることで，任意の自然数\(n \le m\)に対して，
+  \[ \|a_np_n + \dots + a_mp_m\| \le 2M \|p_n\| \]
+  が成り立つ．ここで，(i)をみたすときは，\(\sum a_n p_n\)は一様コーシー条件をみたすから，一様収束する（\cref{thm:uniform_cauchy_condition}）．
+
+  (ii)をみたすとする．\(\sum a_n\)の一様収束性から，任意に\(\varepsilon > 0\)をとれば，ある\(N_0 \in \N\)が存在して，\(n > N_0\)ならば\(\|s^N_n\| < \varepsilon\)が成り立ち，この\(\varepsilon\), \(N_0\)に対して，\(N_0 < N\)なる\(N\)をとれば，\(N < n \le m\)なる任意の自然数\(n\), \(m\)に対して，
+  \[ \|a_np_n + \dots + a_mp_m\| \le 2\varepsilon \|p_0\| \]
+  が成り立つ．ここで，\(2\|p_0\| < +\infty\)は定数だから，\(\sum a_n p_n\)は一様コーシー条件をみたし，一様収束する（\cref{thm:uniform_cauchy_condition}）．
+\end{proof}
+
+\begin{MyTheorem}[アーベルの連続定理][abel_continuity_theorem]
+  冪級数\(\sum a_n x^n\)の収束半径は\(1\)で，\(\sum a_n\)は収束する．このとき，
+  \[ \lim_{x \to 1-0} \sum_{n=0}^\infty a_n x^n = \sum_{n=0}^\infty a_n \]
+  が成り立つ．
+\end{MyTheorem}
+\begin{proof}
+  係数列\(\paren{a_n}\)と\(p_n(x) = x^n\)は，\cref{thm:abel_theorem_function_sequence}の条件をみたすから，\(\sum a_n x^n\)は\([0, 1]\)上一様収束する．一様収束性は連続性を保つから（\cref{prop:uniform_convergence_continuity}），考える冪級数は\([0, 1]\)上で連続で，
+  \[ \lim_{x \to 1-0} \sum_{n=0}^\infty a_n x^n = \sum_{n=0}^\infty a_n. \]
+\end{proof}
+
+\begin{MyCorollary}[][abel_continuity_corollary]
+  冪級数\(\sum a_n x^n\)の収束半径が\(R\in(0, +\infty)\)だとする．\(|\zeta| = 1\)で，\(\sum a_n (\zeta R)^n\)が収束するならば，
+  \[ \lim_{x \to R-0} \sum_{n=0}^\infty a_n (x\zeta)^n = \sum_{n=0}^\infty a_n \zeta^n. \]
+\end{MyCorollary}
+\begin{proof}
+  冪級数\(\sum a_n (R\zeta)^n x^n\)の収束半径は\(1\)だから，\cref{thm:abel_continuity_theorem}より，
+  \[ \lim_{x \to R-0} \sum_{n=0}^\infty a_n (x\zeta)^n = \lim_{x \to 1-0} \sum_{n=0}^\infty a_n (R\zeta)^n x^n = \sum_{n=0}^\infty a_n (R\zeta)^n. \]
+\end{proof}
+
+
+\section{\texorpdfstring{\(\R^n\)}{Rn}上の微分法}
+\label{sec:differentiation_Rn}
+
+多変数関数\(F\)の引数は\(\R^n\)の元であるから，\(F([x_1, \dots, x_n]^T)\)のように書くべきであるが，各成分だけに注目したいときに無駄な情報が多いので\(F(x_1, \dots, x_n)\)と書いて省略することにする．また，成分を幾つかに分けて書きたいときもあるので，\(x_i \in \R^{n_i}\)で，\(n_1 + \dots + n_m = n\)として，\(F(x_1, \dots, x_m)\)と書いて，\(F([x_1^T, \dots, x_m^T]^T)\)のことを表すことにする．
+
+
+
+開集合$U\subset \R^n$上で定義され$\R^m$の値をとる関数$f$が微分可能なら，連続だし偏微分も可能である．
+
+\begin{MyProposition}[合成関数の微分][composite_function_differentiation]
+  \(f:\R^n\to\R^m\)と\(g:\R^l\to\R^n\)が点\(a\)と点\(g(a)\)で微分可能であるとする．このとき，合成関数\(g\circ f:\R^l\to\R^m\)は点\(a\)で微分可能で，\((g\circ f)'(a) = g'(f(a))f'(a)\)が成り立つ．
+\end{MyProposition}
+\begin{proof}
+  仮定より，
+  \begin{align*}
+    f(g(a) + h) & = f(g(a)) + f'(g(a))h + e_1(h), \ e_1 \in o(|h|) \ (|h| \to 0) \\
+    g(a + k)    & = g(a) + g'(a)k + e_2(k), \ e_2 \in o(|k|) \ (|k| \to 0)
+  \end{align*}
+  と書ける．すると，
+  \begin{align*}
+    (f\circ g)(a + k) & = f(g(a) + g'(a)k + e_2(k))                                                       \\
+                       & = (f\circ g)(a) + f'(g(a))g'(a)k + f'(g(a))e_2(k) + e_1(g'(a)k + e_2(k)).
+  \end{align*}
+  あとは，右の後ろ二項が\(o(|k|)\)であることを示せば良い．明らかに，\(|k| \to 0\)のとき，\(f'(g(a))e_2(k) \in o(|k|)\)である．また，
+  \begin{align*}
+    \frac{e_1(g'(a)k + e_2(k))}{|k|} & = \frac{e_1(g'(a)k + e_2(k))}{|g'(a)k + e_2(k)|} \cdot \frac{|g'(a)k + e_2(k)|}{|k|}         \\
+                                    & \le \frac{e_1(g'(a)k + e_2(k))}{|g'(a)k + e_2(k)|} \cdot \paren{|g'(a)| + \frac{|e_2(k)|}{|k|}}.
+  \end{align*}
+  ここで，\(|k| \to 0\)とすれば，\(|g'(a)k + e_2(k)| \to 0\)だから，左辺は\(0\)に収束する．つまり，\(e_1(g'(a)k + e_2(k)) \in o(|k|)\)である．
+\end{proof}
+
+\(m = 1\)の場合，\(g = [g_1, \dots, g_n]\)とすれば，次のように書ける．
+
+\[
+  \begin{bmatrix}
+    D_1(f\circ g)(a) & \cdots & D_l(f\circ g)(a)
+  \end{bmatrix}
+  = \begin{bmatrix}
+    D_1f(g(a)) & \cdots & D_nf(g(a))
+  \end{bmatrix}
+  \begin{bmatrix}
+    D_1g_1(a) & \cdots & D_lg_1(a) \\
+    \vdots        & \ddots & \vdots        \\
+    D_1g_n(a) & \cdots & D_lg_n(a)
+  \end{bmatrix}
+\]
+
+\(j\)列を比較すれば，
+
+\begin{align*}
+  D_j(f\circ g)(a) & = \sum_{k=1}^n D_kf(g(a))D_jg_k(a)
+\end{align*}
+
+
+
+% ヤングの定理
+% シュワルツの定理
+
+\begin{MyTheorem}[][differentiability_continuity_partial_differentiability]
+  \(U \subset \R^n\)を開集合とし，\(f: U \to \R^m\)について，$U$上で$D_if$が存在し，連続であるとする．このとき，\(f\)は\(U\)上で微分可能である．
+\end{MyTheorem}
+\begin{proof}
+  \(i = 1, \dots, n\)に対して，\(f\)の\(i\)成分を\(f_i\)とすれば，各$f_i$がそれぞれで微分可能であることを示せば十分であるから，$m=1$のときのみ考える．
+
+  \(x = [x_1, \dots, x_n]^T \in U\)を任意にとり固定し，絶対値の小さい\(\Delta x = [\Delta x_1, \dots, \Delta x_n]^T\)を任意にとる．まず，偏微分可能性から，平均値の定理（\cref{thm:intermediate_value_theorem}）より
+  \begin{align*}
+    f(x + \Delta x) - f(x)
+    &= f(x_1+\Delta x_1,x_2+\Delta x_2,\dots,x_n+\Delta x_n)
+    - f(x_1,x_2+\Delta x_2,\dots,x_n+\Delta x_n) \\
+    &\quad + f(x_1,x_2+\Delta x_2,x_3+\Delta x_3,\dots,x_n+\Delta x_n) 
+    - f(x_1,x_2,x_3+\Delta x_3,\dots,x_n+\Delta x_n) \\
+    &\quad + \cdots + f(x_1,\dots,x_{n-1},x_n+\Delta x_n) - f(x_1,\dots,x_n) \\
+    &= D_1f(x_1 + \theta_1\Delta x_1,x_2+\Delta x_2,\dots,x_n+\Delta x_n)\Delta x_1 \\
+    &\quad + D_2f(x_1,x_2+\theta_2\Delta x_2,x_3+\Delta x_3,\dots,x_n+\Delta x_n)\Delta x_2\\
+    &\quad + \cdots + D_n f(x_1,\dots,x_{n-1},x_n+\theta_n\Delta x_n)\Delta x_n 
+  \end{align*}
+  と書ける．ここで，\(\theta_i \in (0, 1)\)である．$\Delta x \to 0$のとき，$\theta_i\Delta x_i \to 0$だから，$D_if$の連続性から，
+  \begin{align*}
+    f(x + \Delta x) - f(x) & = D_1f(x)\Delta x_1 + D_2f(x)\Delta x_2 + \cdots + D_nf(x)\Delta x_n + o(|\Delta x|) \\
+    & = [D_1f(x), D_2f(x), \dots, D_nf(x)]\Delta x + o(|\Delta x|)
+  \end{align*}
+  と書け，\(f\)は点\(x\)で微分可能である．$x$は任意だったから，\(f\)は\(U\)上で微分可能である．
+\end{proof}
+
+\begin{MyTheorem}[ヤングの定理][young_theorem]
+  点$a\in\R^n$の開近傍$U$上で定義され，$\R^m$の値をとる関数$f$について，$U$上で$D_{ij}f$と$D_{ji}f$が存在し，$a$において連続であるとする．このとき，$D_{ij}f(a) = D_{ji}f(a)$が成り立つ．
+\end{MyTheorem}
+\begin{proof}
+  成分ごとに考えればよいから，$m=1$の時を証明すればよく，$i$, $j$番目以外の成分は無視できるから，$n=2, i=1, j=2$のときを証明すれば十分である．\(a=[a_1, a_2]^T\)と書く．
+  \begin{align}
+    d(\Delta x_1, \Delta x_2) & = \frac{1}{\Delta x_1\Delta x_2}\brac{\paren{f(a_1 + \Delta x_1, a_2 + \Delta x_2) - f(a_1 + \Delta x_1, a_2)} - \paren{f(a_1, a_2 + \Delta x_2) + f(a_1, a_2)}} \label{eq:young_theorem_1}\\
+    & = \frac{1}{\Delta x_1\Delta x_2}\brac{\paren{f(a_1 + \Delta x_1, a_2 + \Delta x_2) - f(a_1, a_2 + \Delta x_2)} - \paren{f(a_1 + \Delta x_1, a_2) - f(a_1, a_2)}}  \label{eq:young_theorem_2}
+  \end{align}
+  と定める．\cref{eq:young_theorem_1}について，$\Delta x_1$について平均値の定理を適用すれば，ある$\theta_1 \in (0, 1)$が存在して，
+  \begin{align*}
+    d(\Delta x_1, \Delta x_2) & = \frac{1}{\Delta x_2}\brac{D_1f(a_1 + \theta_1\Delta x_1, a_2 + \Delta x_2) - D_1f(a_1 + \theta_1\Delta x_1, a_2)}.
+  \end{align*}
+  $\Delta x_2$について平均値の定理を適用すれば，ある$\theta_2 \in (0, 1)$が存在して，
+  \begin{align*}
+    d(\Delta x_1, \Delta x_2) & = D_{21}f(a_1 + \theta_1\Delta x_1, a_2 + \theta_2\Delta x_2).
+  \end{align*}
+  \cref{eq:young_theorem_2}についても同様にすれば，ある$\theta_3, \theta_4 \in (0, 1)$が存在して，
+  \begin{align*}
+    d(\Delta x_1, \Delta x_2) & = D_{12}f(a_1 + \theta_3\Delta x_1, a_2 + \theta_4\Delta x_2).
+  \end{align*}
+  $\Delta x_1\Delta x_2 \ne 0$をみたしながら，$\Delta x_1, \Delta x_2 \to 0$とするとき，$\theta_i\Delta x_j \to 0$だから，
+  $D_{12}f$と$D_{21}f$の$a$における連続性から，
+  \[ \lim_{\substack{\Delta x_1\Delta x_2 \ne 0 \\ \Delta x_1, \Delta x_2 \to 0}} d(\Delta x_1, \Delta x_2) = D_{12}f(a) = D_{21}f(a). \]
+\end{proof}
+
+
+\begin{MyTheorem}[陰関数定理][implicit_function_theorem]
+  \(U \subset \R^{n+1}\)を開集合とする．\(F: U \to \R\)は\(C^r\)級$(r \ge 1)$で，点\(c \in \R^{n+1}\)について\(F(c)=0\), \(D_{n+1}F(c) \ne 0\)をみたすとする．\(c = [a^T, b]^T \ (a \in \R^n, b \in \R)\)と書くと，\(V \times W \subset U\)であるような，\(a\), \(b\)の開近傍\(V \subset \R^n\)と\(W \subset \R\)が存在して，さらに，ある関数\(g: V \to W\)が存在して，次をみたす：
+  \begin{enumerate}
+    \item \(g(a) = b\).
+    \item \(F(x, y) = 0 \iff y = g(x) \ (\forall [x^T, y]^T \in V \times W)\).
+    \item \(g\)は\(C^r\)級．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  \(D_{n+1}F(c) > 0\)としてよい．\(<0\)だとしても，\(-F\)について主張を適用すればよいからである．\(D_{n+1}F\)は連続だから，\(c\)の開近傍\(V \times W \subset U\)がとれて，
+  \[ D_{n+1}F(x, y) > 0 \quad (\forall [x^T, y]^T \in V \times W) \]
+  が成り立つ．いま，\(F(x, y)\)の\(x\)を固定して得られる関数\(y \mapsto F(x, y)\)は狭義増加関数だから，\([y_0, y_1] \subset W \ (y_0 < b < y_1)\)がとれて，
+  \[ F(a, y_1) > F(a, b) = 0 > F(a, y_0) \]
+  が成り立つ．ここで，\(F\)の連続性から，\(a\)の開近傍\(V_0\), \(V_1\)がとれて，
+  \[ F(x, y_1) > 0 \quad (\forall x \in V_0), \quad F(x, y_0) < 0 \quad (\forall x \in V_1) \]
+  が成り立ち，\(a\)の開近傍\(V' = V_0 \cap V_1 \subset V\)について，
+  \[ F(x, y_1) > 0 > F(x, y_0) \quad (\forall x \in V') \]
+  が成り立つ．ここで，各\(x \in V'\)に対して，\(y \mapsto F(x, y)\)は連続だから，\(F(x, t) = 0\)なる\(t\in(y_0, y_1)\)が存在する（\cref{thm:intermediate_value_theorem}）．この\(t\)を\(g(x)\)とすれば，(i)をみたし，一意に存在するから(ii)もみたす．
+
+  次に，\(g\)の連続性を示す．\((s, t) \subset W\)を任意にとる．\(g^{-1}((s, t))\)が開集合であることを示す．\(g(x) \in (s, t)\)と
+  \[ F(x, t) > 0 = F(x, g(x)) > F(x, s) \]
+  の同値性から，
+  \[ g^{-1}((s, t)) = \set{x \in V' : F(x, t) > 0 > F(x, s)} = \set{x \in V' : F(x, t) > 0} \cap \set{x \in V' : F(x, s) < 0} \]
+  である．\(F\)の連続性から，\(\set{x \in V' : F(x, t) > 0}\)と\(\set{x \in V' : F(x, s) < 0}\)は開集合であるから，\(g^{-1}((s, t))\)は開集合である．
+
+  最後に，\(g\)が\(C^r\)級であることを示す．
+  \(x \in V'\)を任意にとり固定し，絶対値の小さい\(\Delta x = [\Delta x_1, \dots, \Delta x_n]^T \in \R^n\)を任意にとる．\(\Delta y = g(x + \Delta x) - g(x)\)とおく．\(t \mapsto F(x + t\Delta x, g(x) + t\Delta y)\)は\([0, 1]\)上で\(C^1\)級で，\(t = 0, 1\)で\(0\)をとるから，\cref{thm:rolle_theorem}より，ある\(t_0 \in (0, 1)\)が存在して，
+  \[ 0 = \frac{d}{dt}F(x + t\Delta x, g(x) + t\Delta y)\Big|_{t=t_0} = \sum_{i=1}^n D_iF(x + t_0\Delta x, g(x) + t_0\Delta y)\Delta x_i + D_{n+1}F(x + t_0\Delta x, g(x) + t_0\Delta y)\Delta y. \]
+  \(\Delta y\)について解けば，
+  \[ \Delta y = -\sum_{i=1}^n \frac{D_iF(x + t_0\Delta x, g(x) + t_0\Delta y)}{D_{n+1}F(x + t_0\Delta x, g(x) + t_0\Delta y)}\Delta x_i. \]
+  ここで，\(|\Delta x| \to 0\)のとき，\(\Delta y \to 0\)だから，
+  \begin{align*}
+    D_iF(x + t_0\Delta x, g(x) + t_0\Delta y) & = D_iF(x, g(x)) + o(1) \\
+    \frac{1}{D_{n+1}F(x + t_0\Delta x, g(x) + t_0\Delta y)} & = \frac{1}{D_{n+1}F(x, g(x))} + o(1)
+  \end{align*}
+  と書ける．より，
+  \[ \Delta y = -\sum_{i=1}^n \frac{D_iF(x, g(x))}{D_{n+1}F(x, g(x))}\Delta x_i + o(|\Delta x|) \]
+  と書けるので，\(g\)は点\(x\)で微分可能である．\(x\)は任意だったから，\(g\)は\(V'\)上で微分可能である．さらに，\(-D_iF(x, g(x)), D_{n+1}F(x, g(x))\ne0\)は\(V'\)上で連続だから，\(g\)は\(V'\)上で\(C^1\)級である．$g$が\(C^1\)級であることから，\(-D_iF(x, g(x)), D_{n+1}F(x, g(x))\)も\(C^1\)級であるから，\(g\)は\(C^2\)級である．同様の議論を繰り返せば，\(g\)は\(C^r\)級であることがわかる．
+\end{proof}
+
+\begin{MyTheorem}[陰関数定理（多変値）][implicit_function_theorem_multivariable]
+  \(U \subset \R^{n+m}\)を開集合とする．\(F: U \to \R^m\)は\(C^r\)級$(r \ge 1)$で，$F(x) = [F_1(x), \dots, F_m(x)]^T$と書く．点\(c \in \R^{n+m}\)について\(F(c)=0\), \(\det\brac{D_{n+j}F_i(c)}_{i, j=1}^m \ne 0\)をみたすとする．\(c = [a^T, b^T]^T \ (a \in \R^n, b \in \R^m)\)と書くと，\(V \times W \subset U\)であるような，\(a\), \(b\)の開近傍\(V \subset \R^n\)と\(W \subset \R^m\)が存在して，さらに，ある関数\(g: V \to W\)が存在して，次をみたす：
+  \begin{enumerate}
+    \item \(g(a) = b\).
+    \item \(F(x, y) = 0 \iff y = g(x) \ (\forall [x^T, y^T]^T \in V \times W)\).
+    \item \(g\)は\(C^r\)級．とくに，\(\brac{D_jg_i} = -\brac{D_{n+j}F_i}^{-1}\brac{D_jF_i}\)が成り立つ．
+  \end{enumerate}
+\end{MyTheorem}
+\begin{proof}
+  $m$に関する帰納法で示す．$m=1$の場合は，\cref{thm:implicit_function_theorem}の主張である．$m$で主張が成り立つとして，$m + 1$の場合を示す．\(\brac{D_{n+j}F_i(c)}_{i, j=1}^{m+1} \ne 0\)だから，$F_\mu, F_\nu$や$D_{n+\mu}, D_{n+\nu}$を入れ替えることで，\(\det\brac{D_{n+j}F_i(c)}_{i, j=1}^m \ne 0\)とできる（入れ替えはヤコビ行列の基本変形に対応していて，正則性は保たれる．非零にできるのは\(\mathrm{rank}\)の性質から言える．）．$F_1 = \dots = F_m = 0$について，帰納法の仮定が適用できる．つまり，$a = [a_1, \dots, a_n]^T, b=[b_1, \dots, b_{m+1}]^T$と書けば，$[a_1, \dots, a_n, b_{m+1}]^T$, $[b_1, \dots, b_m]^T$のそれぞれの近傍$V_0\times V_1\ (V_0 \subset \R^n, V_1 \subset \R)$, $W_0$がとれて，
+  \[ \varphi = [\varphi_1, \dots, \varphi_m]^T: V_0 \times V_1 \ni [x_1, \dots, x_n, y_{m+1}]^T \mapsto [y_1, \dots, y_m]^T \in W_0 \]
+  と，(i), (ii), (iii)をみたすような$\varphi$をとれる．ここで，
+  \[ F'(x_1, \dots, x_n, y_{m+1}) = F_{m+1}(x_1, \dots, x_n, \varphi_1(x_1, \dots, x_n, y_{m+1}), \dots, \varphi_m(x_1, \dots, x_n, y_{m+1}), y_{m+1}) \]
+  とおくと，$F'$は$V_0$上で$C^r$級で，点$[a_1, \dots, a_n, b_{m+1}]^T$で$0$をとる．さらに，
+  \[
+    A = \brac{D_{n+j}F_i(c)}_{i, j=1}^m,
+    \quad
+    u = \brac{D_{n+1}\varphi_i(a_1, \dots, a_n, b_{m+1})}_{i=1}^m,
+    \quad
+    b = \brac{D_{n+m+1}F_i(c)}_{i=1}^m
+  \]
+  とおけば，\(u=-A^{-1}b\)である．これを用いて，\(D_{n+1}F'(a_1, \dots, a_n, b_{m+1})\)を計算すれば，
+  \begin{align*}
+    D_{n+1}F'(a_1, \dots, a_n, b_{m+1})
+    &= \sum_{i=1}^m D_{n+i}F_{m+1}(c)D_{n+1}\varphi_i(a_1, \dots, a_n, b_{m+1}) + D_{n+m+1}F_{m+1}(c) \\
+    &= D_{n+m+1}F_{m+1}(c) - \brac{D_{n+i}F_{m+1}(c)}_{i=1}^m A^{-1}b.
+  \end{align*}
+  ここで，
+  \[
+    \det\brac{D_{n+j}F_i(c)}_{i, j=1}^{m+1} = 
+    \det\brac{
+      \begin{array}{cc}
+        A & b \\
+        \brac{D_{n+j}F_{m+1}(c)}_{j=1}^m & D_{n+m+1}F_{m+1}(c)
+      \end{array}
+    }
+    = \det A \cdot D_{n+1}F'(a_1, \dots, a_n, b_{m+1})
+  \]
+  である．左辺は仮定より非零で，しかも $\det A \ne 0$ だから，$D_{n+1}F'(a_1, \dots, a_n, b_{m+1}) \ne 0$ となる．よって，$F'$に$m=1$の場合の陰関数定理（\cref{thm:implicit_function_theorem}）を適用できる．これにより，$a$の開近傍$V \subset V_0$と$C^r$級関数$g_{m+1}: V \to V_1$が存在して，
+  \[
+    F'(x_1, \dots, x_n, g_{m+1}(x_1, \dots, x_n)) = 0
+  \]
+  が成り立つ．ここで，$g = [\varphi_1(x_1, \dots, x_n, g_{m+1}(x_1, \dots, x_n))
+  , \dots, \varphi_m(\cdots), g_{m+1}]^T:V\to W_0 \times V_1 = W$と定める．(i)は明らかにみたす．$x \in V, y \in W$に対して，
+  \begin{align*}
+      F(x, y) = 0 \iff \begin{cases}
+      y_i = \varphi_i(x, y_{m+1}) \ (i = 1, \dots, m) \\
+      F'(x, y_{m+1}) = 0
+    \end{cases} &\iff \begin{cases}
+      y_i = \varphi_i(x, g_{m+1}(x)) \ (i = 1, \dots, m) \\
+      y_{m+1} = g_{m+1}(x)
+    \end{cases} \\ &\iff y = g(x)
+  \end{align*}
+  だから，(ii)もみたす．$\varphi_i, g_{m+1}$は$C^r$級であるから，$g$も$C^r$級である．$[D_jg_i]$については\cref{cor:implicit_function_derivative}で示す．よって，(iii)もみたす．
+\end{proof}
+
+\begin{MyCorollary}[][implicit_function_derivative]
+  \cref{thm:implicit_function_theorem}の条件をみたすとき，
+  \[ \brac{D_jg_i} = -\brac{D_{n+j}F_i}^{-1}\brac{D_iF_j} \]
+  ただし，\(g = [g_1, \dots, g_n]\)とする．
+\end{MyCorollary}
+\begin{proof}
+  \(F(x, g(x)) = 0\)の微分を考えると，
+  \begin{align*}
+    0 = D_j(F_i(x, g(x))) = (D_jF_i)(x, g(x)) + \sum_{k=1}^n (D_{n+k}F_i)(x, g(x))D_jg_k(x) \\
+    \implies -\brac{D_jF_i} = \brac{D_{n+j}F_i}\brac{D_jg_i} \implies \brac{D_jg_i} = -\brac{D_{n+j}F_i}^{-1}\brac{D_iF_j}.
+  \end{align*}
+\end{proof}
+
+\section{\texorpdfstring{\(\R^n\)}{Rn}上の積分法}
+\label{sec:integration_Rn}
+
+% ref
+% 杉浦解析
+% 内田
+
+
+\end{document}
