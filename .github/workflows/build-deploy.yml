@@ -43,27 +43,11 @@ jobs:
       - name: Mark repository as safe
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - name: Prepare SSH for private submodules
-        if: ${{ env.SUBMODULE_DEPLOY_KEY != '' }}
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          printf '%s\n' "$SUBMODULE_DEPLOY_KEY" > ~/.ssh/submodule_deploy_key
-          chmod 600 ~/.ssh/submodule_deploy_key
-          touch ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          cat > ~/.ssh/config <<'EOF'
-          Host github.com
-            IdentityFile ~/.ssh/submodule_deploy_key
-            IdentitiesOnly yes
-          EOF
+      - name: Make scripts executable
+        run: chmod +x .github/scripts/*.sh .github/scripts/*.py
 
-      - name: Use HTTPS for public submodules
-        if: ${{ env.SUBMODULE_DEPLOY_KEY == '' }}
-        run: |
-          git config --global url."https://github.com/".insteadOf "git@github.com:"
-          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+      - name: Configure submodule authentication
+        run: .github/scripts/setup-submodule-auth.sh
 
       - name: Checkout submodules
         run: |
@@ -71,9 +55,6 @@ jobs:
             git submodule sync --recursive
             git submodule update --init --recursive
           fi
-
-      - name: Make scripts executable
-        run: chmod +x .github/scripts/*.sh .github/scripts/*.py
 
       - name: Build PDFs
         run: .github/scripts/build.sh
