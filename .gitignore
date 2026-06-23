@@ -1,0 +1,27 @@
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+
+# pdfはGithub Actionsでbuildして，何らかの方法で公開する
+*.pdf
+
+# Python
+__pycache__/
+*.pyc
+
+# Generated site
+/dist/
+/index.html
+**/index.html
+
+# OS
+.DS_Store
+Thumbs.db

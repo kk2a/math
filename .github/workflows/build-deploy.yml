@@ -1,0 +1,86 @@
+name: Build and deploy PDFs
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - submodule-updated
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-deploy-branch
+  cancel-in-progress: false
+
+env:
+  DEPLOY_BRANCH: deploy
+  DEPLOY_DIR: dist
+  SITE_TITLE: math
+  SUBMODULE_DEPLOY_KEY: ${{ secrets.SUBMODULE_DEPLOY_KEY }}
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: texlive/texlive:latest
+    steps:
+      - name: Install workflow dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git openssh-client python3 ca-certificates
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: false
+          persist-credentials: true
+
+      - name: Mark repository as safe
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Prepare SSH for private submodules
+        if: ${{ env.SUBMODULE_DEPLOY_KEY != '' }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SUBMODULE_DEPLOY_KEY" > ~/.ssh/submodule_deploy_key
+          chmod 600 ~/.ssh/submodule_deploy_key
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<'EOF'
+          Host github.com
+            IdentityFile ~/.ssh/submodule_deploy_key
+            IdentitiesOnly yes
+          EOF
+
+      - name: Use HTTPS for public submodules
+        if: ${{ env.SUBMODULE_DEPLOY_KEY == '' }}
+        run: |
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
+      - name: Checkout submodules
+        run: |
+          if [ -f .gitmodules ]; then
+            git submodule sync --recursive
+            git submodule update --init --recursive
+          fi
+
+      - name: Make scripts executable
+        run: chmod +x .github/scripts/*.sh .github/scripts/*.py
+
+      - name: Build PDFs
+        run: .github/scripts/build.sh
+
+      - name: Generate index pages
+        run: .github/scripts/generate-index.py
+
+      - name: Prepare deploy directory
+        run: .github/scripts/prepare-deploy-dir.sh "$DEPLOY_DIR"
+
+      - name: Push deploy branch
+        run: .github/scripts/push-deploy-branch.sh "$DEPLOY_DIR"
