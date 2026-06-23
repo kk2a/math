@@ -19,7 +19,7 @@ main() {
 
   local worktree_dir
   worktree_dir="$(mktemp -d)"
-  trap 'git worktree remove --force "${worktree_dir}" >/dev/null 2>&1 || true; rm -rf "${worktree_dir}"' EXIT
+  trap 'git worktree remove --force "${worktree_dir:-}" >/dev/null 2>&1 || true; rm -rf "${worktree_dir:-}"' EXIT
 
   if git ls-remote --exit-code --heads origin "${DEPLOY_BRANCH}" >/dev/null 2>&1; then
     log "Checking out existing deploy branch: ${DEPLOY_BRANCH}"
