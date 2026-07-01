@@ -85,10 +85,10 @@ LaTeXのコンパイル環境として，TeX Live fullがインストールさ�
 ### 成果物管理とデプロイ専用ブランチ
 デプロイ専用ブランチは配信に必要十分なファイルのみを保持します．デプロイの対象となるファイル群（各プロジェクトのmain.pdfおよび生成されたindex.html）は，デプロイ専用ブランチ上のpublic/ディレクトリ配下へ集約します．texソースコードやコンパイル用の中間ファイルはすべて除外します．作業用のメインブランチ等では，.gitignoreの指定によりPDFファイルはGitの管理対象外となります．
 
-既存のデプロイ専用ブランチに過去の不要ファイルが残っている場合でも，GitHub Actionsはデプロイごとにブランチ内容を作り直し，public/とGitの管理に必要なファイルのみをpushします．Cloudflare Workers側では公開対象ディレクトリをpublicに設定します．
+既存のデプロイ専用ブランチに過去の不要ファイルが残っている場合でも，GitHub Actionsはデプロイごとにブランチ内容を作り直し，public/とWorkers設定ファイルのみをpushします．
 
 ### デプロイ環境
-Cloudflare Workersを利用して成果物を配信します．Workersの公開対象ディレクトリはデプロイ専用ブランチのpublicに設定します．GitHub Actionsによるデプロイ専用ブランチへの自動プッシュをトリガーとして配信プロセスが実行されます．
+Cloudflare Workersを利用して成果物を配信します．GitHub Actionsはデプロイ専用ブランチのルートにwrangler.tomlを生成し，Workersのassets.directoryを./public/に固定します．これにより，deploy branch rootや.wrangler/tmpなどの作業用ファイルが静的アセットとして公開されることを防ぎます．GitHub Actionsによるデプロイ専用ブランチへの自動プッシュをトリガーとして配信プロセスが実行されます．
 
 ### デプロイ専用ブランチの保護
 将来的にデプロイ専用ブランチへbranch protection ruleを設定する場合，GitHub Actionsからのpushを許可するための設計が必要です．次のいずれかを選択します．
@@ -103,4 +103,4 @@ Cloudflare Workersを利用して成果物を配信します．Workersの公開�
 - deploy branchへのpush主体（GITHUB_TOKEN，deploy key，GitHub App，PAT等）が保護ルールを通過またはbypassできること．
 - required status checksを設定する場合，deploy branch更新時にも該当チェックが完了すること．
 - force push禁止を有効にする場合，現在のスクリプトの通常push運用で問題ないこと．
-- Cloudflare Workersの公開対象ディレクトリがpublicに固定されていること．
+- deploy branch rootのwrangler.tomlでCloudflare Workersのassets.directoryが./public/に固定されていること．
