@@ -22,6 +22,8 @@ env:
   DEPLOY_DIR: dist
   PUBLIC_DIR: public
   SITE_TITLE: math
+  WORKER_NAME: math
+  WORKER_COMPATIBILITY_DATE: '2026-07-01'
   SUBMODULE_DEPLOY_KEY: ${{ secrets.SUBMODULE_DEPLOY_KEY }}
 
 jobs:
@@ -66,6 +68,9 @@ jobs:
 
       - name: Prepare deploy directory
         run: .github/scripts/prepare-deploy-dir.sh "$DEPLOY_DIR"
+
+      - name: Generate Workers config
+        run: .github/scripts/generate-wrangler-config.sh "$DEPLOY_DIR"
 
       - name: Push deploy branch
         run: .github/scripts/push-deploy-branch.sh "$DEPLOY_DIR"
