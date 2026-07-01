@@ -1,0 +1,29 @@
+name: Update Submodules
+run-name: Update Submodules
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+          token: ${{ secrets.PAT_FOR_PR }}
+
+      - name: Update submodules
+        run:
+          git submodule update --remote
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.PAT_FOR_PR }}
+          commit-message: "chore: update submodules"
+          title: "Update submodules"
+          body: "サブモジュールの手動更新です．"
+          branch: update-submodules
