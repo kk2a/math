@@ -20,6 +20,7 @@ __pycache__/
 
 # Generated site
 /dist/
+/public/
 /index.html
 **/index.html
 
