@@ -13,7 +13,8 @@ LaTeXのプロジェクト群を統合管理し，GitHub Actionsでビルド，C
 │   └── workflows/
 │       └── build-deploy.yml  # ビルドおよびデプロイ用ワークフロー
 ├── .gitignore                # PDFファイルの除外設定
-├── .gitmodules               
+├── .gitmodules
+├── public/                   # デプロイ専用ブランチ上の公開用ディレクトリ
 ├── _my_style/                # 共通スタイルファイル（サブモジュール）
 ├── project-a/                # プロジェクト（サブモジュール）
 │   ├── fig/                  # project-aでつかう図
@@ -82,7 +83,24 @@ LaTeXのコンパイル環境として，TeX Live fullがインストールさ�
 4. すべてのコンパイルが完了した後，生成されたPDFファイルへアクセスするための目次ページ（index.html）をルートディレクトリに作成します．同時に，各プロジェクトのディレクトリ内にもPDFをブラウザ上で表示するためのindex.htmlを自動生成します．
 
 ### 成果物管理とデプロイ専用ブランチ
-デプロイ専用ブランチは配信に必要十分なファイルのみを保持します．デプロイの対象となるファイル群（各プロジェクトのmain.pdfおよび生成されたindex.html）とGitの管理に必要なファイルのみを含め，texソースコードやコンパイル用の中間ファイルはすべて除外します．作業用のメインブランチ等では，.gitignoreの指定によりPDFファイルはGitの管理対象外となります．
+デプロイ専用ブランチは配信に必要十分なファイルのみを保持します．デプロイの対象となるファイル群（各プロジェクトのmain.pdfおよび生成されたindex.html）は，デプロイ専用ブランチ上のpublic/ディレクトリ配下へ集約します．texソースコードやコンパイル用の中間ファイルはすべて除外します．作業用のメインブランチ等では，.gitignoreの指定によりPDFファイルはGitの管理対象外となります．
+
+既存のデプロイ専用ブランチに過去の不要ファイルが残っている場合でも，GitHub Actionsはデプロイごとにブランチ内容を作り直し，public/とGitの管理に必要なファイルのみをpushします．Cloudflare Workers側では公開対象ディレクトリをpublicに設定します．
 
 ### デプロイ環境
-Cloudflare Pagesを利用して成果物を配信します．Cloudflare Pagesのビルド監視対象はデプロイ専用ブランチに設定されています．GitHub Actionsによるデプロイ専用ブランチへの自動プッシュをトリガーとして配信プロセスが実行されます．
+Cloudflare Workersを利用して成果物を配信します．Workersの公開対象ディレクトリはデプロイ専用ブランチのpublicに設定します．GitHub Actionsによるデプロイ専用ブランチへの自動プッシュをトリガーとして配信プロセスが実行されます．
+
+### デプロイ専用ブランチの保護
+将来的にデプロイ専用ブランチへbranch protection ruleを設定する場合，GitHub Actionsからのpushを許可するための設計が必要です．次のいずれかを選択します．
+
+1. GitHub ActionsのGITHUB_TOKENによる直接pushを続ける．この場合，Repository settingsのActions permissionsでRead and write permissionsを有効にし，deploy branchの保護ルールはActionsの通常pushを妨げない設定にします．PR必須やpush制限を強くかける場合はこの方式では失敗する可能性があります．
+2. GitHub Appなど，branch protectionまたはrulesetのbypassを許可できる専用資格情報でpushする．この場合，最小権限の資格情報をSecretsに登録し，push時の認証に使用します．deploy keyやPATを使う場合は，対象ルールを実際にbypassできるか事前確認が必要です．
+3. deploy branchへ直接pushせず，GitHub Actionsがpull requestを作成し，required status checks通過後にmergeする運用に変更する．保護を最も強くできますが，自動デプロイにはauto-merge等の追加設定が必要です．
+
+保護ルールを有効にする前に，少なくとも次を確認します．
+
+- デプロイWorkflowに必要な`contents: write`権限があること．
+- deploy branchへのpush主体（GITHUB_TOKEN，deploy key，GitHub App，PAT等）が保護ルールを通過またはbypassできること．
+- required status checksを設定する場合，deploy branch更新時にも該当チェックが完了すること．
+- force push禁止を有効にする場合，現在のスクリプトの通常push運用で問題ないこと．
+- Cloudflare Workersの公開対象ディレクトリがpublicに固定されていること．

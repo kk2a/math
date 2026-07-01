@@ -1,3 +1,4 @@
 [submodule "_my_style"]
 	path = _my_style
 	url = git@github.com:kk2a/_my_style.git
+	branch = main

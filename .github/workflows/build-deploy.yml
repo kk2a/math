@@ -20,6 +20,7 @@ concurrency:
 env:
   DEPLOY_BRANCH: deploy
   DEPLOY_DIR: dist
+  PUBLIC_DIR: public
   SITE_TITLE: math
   SUBMODULE_DEPLOY_KEY: ${{ secrets.SUBMODULE_DEPLOY_KEY }}
 

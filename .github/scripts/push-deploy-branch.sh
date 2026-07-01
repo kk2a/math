@@ -39,7 +39,6 @@ main() {
     cd "${worktree_dir}"
     find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
     cp -a "${DEPLOY_DIR}/." .
-    touch .nojekyll
 
     git add -A
     if git diff --cached --quiet; then
