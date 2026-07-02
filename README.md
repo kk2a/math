@@ -88,7 +88,7 @@ LaTeXのコンパイル環境として，TeX Live fullがインストールさ�
 既存のデプロイ専用ブランチに過去の不要ファイルが残っている場合でも，GitHub Actionsはデプロイごとにブランチ内容を作り直し，public/とWorkers設定ファイルのみをpushします．
 
 ### デプロイ環境
-Cloudflare Workersを利用して成果物を配信します．GitHub Actionsはデプロイ専用ブランチのルートにwrangler.tomlを生成し，Workersのassets.directoryを./public/に固定します．これにより，deploy branch rootや.wrangler/tmpなどの作業用ファイルが静的アセットとして公開されることを防ぎます．GitHub Actionsによるデプロイ専用ブランチへの自動プッシュをトリガーとして配信プロセスが実行されます．
+Cloudflare Workersを利用して成果物を配信します．GitHub Actionsはデプロイ専用ブランチのルートにwrangler.jsoncを生成し，Workersのassets.directoryを./public/に固定します．さらにpublic/.assetsignoreを生成し，.wrangler/やwrangler.toml，wrangler.jsonが静的アセットとしてアップロードされないようにします．これにより，deploy branch rootや.wrangler/tmpなどの作業用ファイルが公開されることを防ぎます．GitHub Actionsによるデプロイ専用ブランチへの自動プッシュをトリガーとして配信プロセスが実行されます．
 
 ### デプロイ専用ブランチの保護
 将来的にデプロイ専用ブランチへbranch protection ruleを設定する場合，GitHub Actionsからのpushを許可するための設計が必要です．次のいずれかを選択します．
@@ -103,4 +103,5 @@ Cloudflare Workersを利用して成果物を配信します．GitHub Actionsは
 - deploy branchへのpush主体（GITHUB_TOKEN，deploy key，GitHub App，PAT等）が保護ルールを通過またはbypassできること．
 - required status checksを設定する場合，deploy branch更新時にも該当チェックが完了すること．
 - force push禁止を有効にする場合，現在のスクリプトの通常push運用で問題ないこと．
-- deploy branch rootのwrangler.tomlでCloudflare Workersのassets.directoryが./public/に固定されていること．
+- deploy branch rootのwrangler.jsoncでCloudflare Workersのassets.directoryが./public/に固定されていること．
+- public/.assetsignoreで.wrangler/やwrangler.toml，wrangler.jsonが除外されていること．

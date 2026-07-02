@@ -12,15 +12,25 @@ WORKER_COMPATIBILITY_DATE="${WORKER_COMPATIBILITY_DATE:-2026-07-01}"
 main() {
   mkdir -p "${DEPLOY_DIR}"
 
-  cat > "${DEPLOY_DIR}/wrangler.toml" <<EOF
-name = "${WORKER_NAME}"
-compatibility_date = "${WORKER_COMPATIBILITY_DATE}"
-
-[assets]
-directory = "./${PUBLIC_DIR}/"
+  cat > "${DEPLOY_DIR}/wrangler.jsonc" <<EOF
+{
+  "name": "${WORKER_NAME}",
+  "compatibility_date": "${WORKER_COMPATIBILITY_DATE}",
+  "assets": {
+    "directory": "./${PUBLIC_DIR}/"
+  }
+}
 EOF
 
-  log "Generated Workers config: ${DEPLOY_DIR}/wrangler.toml"
+  cat > "${DEPLOY_DIR}/${PUBLIC_DIR}/.assetsignore" <<'EOF'
+.wrangler
+.wrangler/**
+wrangler.toml
+wrangler.json
+EOF
+
+  log "Generated Workers config: ${DEPLOY_DIR}/wrangler.jsonc"
+  log "Generated assets ignore file: ${DEPLOY_DIR}/${PUBLIC_DIR}/.assetsignore"
 }
 
 main "$@"
